@@ -32,8 +32,8 @@
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
 
-    /* Accent - Warm amber/orange for CTAs and highlights */
-    --accent: 25 95% 53%;
+    /* Accent - Dodger Blue for CTAs and highlights */
+    --accent: 210 100% 56%;
     --accent-foreground: 0 0% 100%;
 
     /* Success - Green for positive states */
@@ -51,23 +51,23 @@
     /* Borders and inputs */
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 25 95% 53%;
+    --ring: 210 100% 56%;
 
     --radius: 0.625rem;
 
     /* Sidebar - Dark professional look */
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 25 95% 53%;
+    --sidebar-primary: 210 100% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 47% 16%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 222 47% 18%;
-    --sidebar-ring: 25 95% 53%;
+    --sidebar-ring: 210 100% 56%;
     --sidebar-muted: 220 9% 46%;
 
     /* Chart colors for analytics */
-    --chart-1: 25 95% 53%;
+    --chart-1: 210 100% 56%;
     --chart-2: 142 76% 36%;
     --chart-3: 222 47% 40%;
     --chart-4: 38 92% 50%;
@@ -87,21 +87,21 @@
     --secondary-foreground: 210 40% 98%;
     --muted: 222 47% 14%;
     --muted-foreground: 220 9% 60%;
-    --accent: 25 95% 53%;
+    --accent: 210 100% 56%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 222 47% 18%;
     --input: 222 47% 18%;
-    --ring: 25 95% 53%;
+    --ring: 210 100% 56%;
     --sidebar-background: 222 47% 6%;
     --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 25 95% 53%;
+    --sidebar-primary: 210 100% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 47% 12%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 222 47% 14%;
-    --sidebar-ring: 25 95% 53%;
+    --sidebar-ring: 210 100% 56%;
   }
 }
 

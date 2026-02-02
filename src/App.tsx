@@ -9,6 +9,8 @@ import EventsListPage from "@/pages/admin/EventsListPage";
 import CreateEventPage from "@/pages/admin/CreateEventPage";
 import EditEventPage from "@/pages/admin/EditEventPage";
 import EventDetailPage from "@/pages/admin/EventDetailPage";
+import LoginPage from "@/pages/auth/LoginPage";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,8 +22,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Redirect root to admin dashboard */}
-          <Route path="/" element={<Navigate to="/admin" replace />} />
+          {/* Redirect root to login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          {/* Auth routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLayout />}>
