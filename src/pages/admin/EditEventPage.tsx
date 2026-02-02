@@ -42,16 +42,32 @@ export default function EditEventPage() {
     navigate('/admin/events');
   };
 
-  const defaultValues: EventFormData = {
+  const defaultValues: Partial<EventFormData> = {
     title: event.title,
     description: event.description,
     date: event.date,
     time: event.time,
-    location: event.location,
+    doorOpeningTime: '',
+    doorClosingTime: '',
+    city: 'libreville',
+    address: event.location,
+    locationDetails: '',
     imageUrl: event.imageUrl,
-    totalSeats: event.totalSeats,
-    ticketPrice: event.ticketPrice,
-    status: event.status,
+    organizationName: 'Ticket241 Events',
+    organizerName: '',
+    organizerPhone: '',
+    category: 'concert',
+    ticketCategories: [],
+    isPublished: event.status === 'published',
+    isFeatured: false,
+    isPromoted: false,
+    isPublic: true,
+    isOnline: false,
+    onlineLink: '',
+    minimumAge: 0,
+    lowestPrice: event.ticketPrice,
+    refundDays: 7,
+    termsAndConditions: '',
   };
 
   return (
@@ -72,15 +88,14 @@ export default function EditEventPage() {
         </p>
       </div>
 
-      {/* Form */}
-      <div className="max-w-3xl">
-        <EventForm
-          defaultValues={defaultValues}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          submitLabel="Enregistrer les modifications"
-        />
-      </div>
+      {/* Form - Full Width */}
+      <EventForm
+        defaultValues={defaultValues}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        submitLabel="Enregistrer les modifications"
+        organizationName="Ticket241 Events"
+      />
     </div>
   );
 }

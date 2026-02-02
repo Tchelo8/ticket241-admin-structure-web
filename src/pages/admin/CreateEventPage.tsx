@@ -39,14 +39,13 @@ export default function CreateEventPage() {
         </p>
       </div>
 
-      {/* Form */}
-      <div className="max-w-3xl">
-        <EventForm
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          submitLabel="Créer l'événement"
-        />
-      </div>
+      {/* Form - Full Width */}
+      <EventForm
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        submitLabel="Créer l'événement"
+        organizationName="Ticket241 Events"
+      />
     </div>
   );
 }

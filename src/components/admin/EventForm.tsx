@@ -1,30 +1,53 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { EventFormData, EventStatus } from '@/types/event';
+import { EventFormData, TicketCategory } from '@/types/event';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Calendar, Clock, MapPin, Image, Users, CreditCard, Save, Send } from 'lucide-react';
+import { Save, Send } from 'lucide-react';
+import { useState } from 'react';
+
+import { GeneralInfoSection } from './form/GeneralInfoSection';
+import { DateLocationSection } from './form/DateLocationSection';
+import { ImageUploadSection } from './form/ImageUploadSection';
+import { TicketCategoriesSection } from './form/TicketCategoriesSection';
+import { OrganizerSection } from './form/OrganizerSection';
+import { SettingsSection } from './form/SettingsSection';
 
 const eventFormSchema = z.object({
   title: z.string().min(3, 'Le titre doit contenir au moins 3 caractères').max(100),
   description: z.string().min(10, 'La description doit contenir au moins 10 caractères').max(2000),
   date: z.string().min(1, 'La date est requise'),
-  time: z.string().min(1, 'L\'heure est requise'),
-  location: z.string().min(3, 'Le lieu doit contenir au moins 3 caractères').max(200),
-  imageUrl: z.string().url('URL d\'image invalide').or(z.literal('')),
-  totalSeats: z.coerce.number().min(1, 'Au moins 1 place requise').max(100000),
-  ticketPrice: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
-  status: z.enum(['draft', 'published', 'cancelled'] as const),
+  time: z.string().min(1, "L'heure est requise"),
+  doorOpeningTime: z.string().optional(),
+  doorClosingTime: z.string().optional(),
+  city: z.string().min(1, 'La ville est requise'),
+  address: z.string().min(3, "L'adresse doit contenir au moins 3 caractères"),
+  locationDetails: z.string().optional(),
+  imageUrl: z.string().optional(),
+  imageFile: z.any().optional(),
+  organizationName: z.string(),
+  organizerName: z.string().min(2, 'Le nom est requis'),
+  organizerPhone: z.string().min(8, 'Le numéro de téléphone est requis'),
+  category: z.string().min(1, 'La catégorie est requise'),
+  ticketCategories: z.array(z.any()),
+  isPublished: z.boolean(),
+  isFeatured: z.boolean(),
+  isPromoted: z.boolean(),
+  isPublic: z.boolean(),
+  isOnline: z.boolean(),
+  onlineLink: z.string().optional(),
+  minimumAge: z.coerce.number().min(0).optional(),
+  lowestPrice: z.coerce.number().min(0).optional(),
+  refundDays: z.coerce.number().min(0).optional(),
+  termsAndConditions: z.string().optional(),
+}).refine((data) => {
+  if (data.isOnline && !data.onlineLink) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'Le lien est requis pour les événements en ligne',
+  path: ['onlineLink'],
 });
 
 interface EventFormProps {
@@ -32,9 +55,20 @@ interface EventFormProps {
   onSubmit: (data: EventFormData) => void;
   isSubmitting?: boolean;
   submitLabel?: string;
+  organizationName?: string;
 }
 
-export function EventForm({ defaultValues, onSubmit, isSubmitting, submitLabel = 'Enregistrer' }: EventFormProps) {
+export function EventForm({
+  defaultValues,
+  onSubmit,
+  isSubmitting,
+  submitLabel = 'Enregistrer',
+  organizationName = 'Ticket241 Events',
+}: EventFormProps) {
+  const [ticketCategories, setTicketCategories] = useState<TicketCategory[]>(
+    defaultValues?.ticketCategories || []
+  );
+
   const {
     register,
     handleSubmit,
@@ -48,209 +82,115 @@ export function EventForm({ defaultValues, onSubmit, isSubmitting, submitLabel =
       description: '',
       date: '',
       time: '',
-      location: '',
+      doorOpeningTime: '',
+      doorClosingTime: '',
+      city: '',
+      address: '',
+      locationDetails: '',
       imageUrl: '',
-      totalSeats: 100,
-      ticketPrice: 5000,
-      status: 'draft',
+      imageFile: null,
+      organizationName: organizationName,
+      organizerName: '',
+      organizerPhone: '',
+      category: '',
+      ticketCategories: [],
+      isPublished: true,
+      isFeatured: false,
+      isPromoted: false,
+      isPublic: true,
+      isOnline: false,
+      onlineLink: '',
+      minimumAge: 0,
+      lowestPrice: 0,
+      refundDays: 7,
+      termsAndConditions: '',
       ...defaultValues,
     },
   });
 
-  const status = watch('status');
+  const category = watch('category');
+  const city = watch('city');
   const imageUrl = watch('imageUrl');
+  const isPublished = watch('isPublished');
+  const isFeatured = watch('isFeatured');
+  const isPromoted = watch('isPromoted');
+  const isPublic = watch('isPublic');
+  const isOnline = watch('isOnline');
+
+  const handleFormSubmit = (data: EventFormData) => {
+    onSubmit({
+      ...data,
+      ticketCategories,
+    });
+  };
+
+  const handleToggleChange = (field: keyof EventFormData, value: boolean) => {
+    setValue(field, value as any);
+  };
+
+  const handleImageChange = (file: File | null, url: string) => {
+    setValue('imageFile', file);
+    setValue('imageUrl', url);
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-      {/* Basic Info */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-        <h3 className="text-lg font-semibold">Informations générales</h3>
-        
-        <div className="space-y-2">
-          <Label htmlFor="title">Titre de l'événement *</Label>
-          <Input
-            id="title"
-            placeholder="Ex: Festival de Musique Libreville 2024"
-            {...register('title')}
-          />
-          {errors.title && (
-            <p className="text-sm text-destructive">{errors.title.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">Description *</Label>
-          <Textarea
-            id="description"
-            placeholder="Décrivez votre événement en détail..."
-            rows={5}
-            {...register('description')}
-          />
-          {errors.description && (
-            <p className="text-sm text-destructive">{errors.description.message}</p>
-          )}
-        </div>
-      </div>
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+      {/* General Info */}
+      <GeneralInfoSection
+        register={register}
+        errors={errors}
+        category={category}
+        onCategoryChange={(value) => setValue('category', value)}
+        organizationName={organizationName}
+      />
 
       {/* Date & Location */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-        <h3 className="text-lg font-semibold">Date et lieu</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="date" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Date *
-            </Label>
-            <Input
-              id="date"
-              type="date"
-              {...register('date')}
-            />
-            {errors.date && (
-              <p className="text-sm text-destructive">{errors.date.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="time" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Heure *
-            </Label>
-            <Input
-              id="time"
-              type="time"
-              {...register('time')}
-            />
-            {errors.time && (
-              <p className="text-sm text-destructive">{errors.time.message}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="location" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Lieu *
-          </Label>
-          <Input
-            id="location"
-            placeholder="Ex: Stade de l'Amitié, Libreville"
-            {...register('location')}
-          />
-          {errors.location && (
-            <p className="text-sm text-destructive">{errors.location.message}</p>
-          )}
-        </div>
-      </div>
+      <DateLocationSection
+        register={register}
+        errors={errors}
+        city={city}
+        onCityChange={(value) => setValue('city', value)}
+      />
 
       {/* Image */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Image className="h-5 w-5" />
-          Image de l'événement
-        </h3>
-        
-        <div className="space-y-2">
-          <Label htmlFor="imageUrl">URL de l'image</Label>
-          <Input
-            id="imageUrl"
-            placeholder="https://example.com/image.jpg"
-            {...register('imageUrl')}
-          />
-          {errors.imageUrl && (
-            <p className="text-sm text-destructive">{errors.imageUrl.message}</p>
-          )}
-        </div>
+      <ImageUploadSection
+        register={register}
+        errors={errors}
+        imageUrl={imageUrl}
+        onImageChange={handleImageChange}
+      />
 
-        {imageUrl && (
-          <div className="mt-4">
-            <p className="text-sm text-muted-foreground mb-2">Aperçu :</p>
-            <img
-              src={imageUrl}
-              alt="Aperçu"
-              className="h-48 w-full object-cover rounded-lg border"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800';
-              }}
-            />
-          </div>
-        )}
-      </div>
+      {/* Ticket Categories */}
+      <TicketCategoriesSection
+        ticketCategories={ticketCategories}
+        onCategoriesChange={setTicketCategories}
+      />
 
-      {/* Tickets */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-        <h3 className="text-lg font-semibold">Billets</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="totalSeats" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Nombre de places *
-            </Label>
-            <Input
-              id="totalSeats"
-              type="number"
-              min={1}
-              {...register('totalSeats')}
-            />
-            {errors.totalSeats && (
-              <p className="text-sm text-destructive">{errors.totalSeats.message}</p>
-            )}
-          </div>
+      {/* Organizer Info */}
+      <OrganizerSection register={register} errors={errors} />
 
-          <div className="space-y-2">
-            <Label htmlFor="ticketPrice" className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
-              Prix du billet (FCFA) *
-            </Label>
-            <Input
-              id="ticketPrice"
-              type="number"
-              min={0}
-              step={500}
-              {...register('ticketPrice')}
-            />
-            {errors.ticketPrice && (
-              <p className="text-sm text-destructive">{errors.ticketPrice.message}</p>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Settings & Publication */}
+      <SettingsSection
+        register={register}
+        errors={errors}
+        isPublished={isPublished}
+        isFeatured={isFeatured}
+        isPromoted={isPromoted}
+        isPublic={isPublic}
+        isOnline={isOnline}
+        onToggleChange={handleToggleChange}
+      />
 
-      {/* Status & Actions */}
-      <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-        <h3 className="text-lg font-semibold">Publication</h3>
-        
-        <div className="space-y-2">
-          <Label htmlFor="status">Statut</Label>
-          <Select
-            value={status}
-            onValueChange={(value: EventStatus) => setValue('status', value)}
-          >
-            <SelectTrigger className="w-full md:w-64">
-              <SelectValue placeholder="Sélectionner un statut" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="draft">Brouillon</SelectItem>
-              <SelectItem value="published">Publié</SelectItem>
-              <SelectItem value="cancelled">Annulé</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-sm text-muted-foreground">
-            {status === 'draft' && 'L\'événement ne sera visible que par vous.'}
-            {status === 'published' && 'L\'événement sera visible publiquement.'}
-            {status === 'cancelled' && 'L\'événement sera marqué comme annulé.'}
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+      {/* Submit Button */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             type="submit"
             disabled={isSubmitting}
+            size="lg"
             className="bg-accent text-accent-foreground hover:bg-accent/90"
           >
-            {status === 'published' ? (
+            {isPublished ? (
               <Send className="h-4 w-4 mr-2" />
             ) : (
               <Save className="h-4 w-4 mr-2" />
