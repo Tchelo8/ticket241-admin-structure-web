@@ -6,7 +6,14 @@ import {
   Ticket,
   LogOut,
   Menu,
-  X
+  X,
+  Building2,
+  TrendingUp,
+  ScanLine,
+  KeyRound,
+  Bell,
+  HelpCircle,
+  Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -16,6 +23,13 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Événements', href: '/admin/events', icon: CalendarDays },
   { name: 'Créer un événement', href: '/admin/events/create', icon: PlusCircle },
+  { name: 'Ma structure', href: '/admin/organization', icon: Building2 },
+  { name: 'Suivi des ventes', href: '/admin/sales', icon: TrendingUp },
+  { name: 'Agent de Scan', href: '/admin/scan-agents', icon: ScanLine },
+  { name: 'Accès & contrôle', href: '/admin/access-control', icon: KeyRound },
+  { name: 'Notifications', href: '/admin/notifications', icon: Bell },
+  { name: 'Support & assistance', href: '/admin/support', icon: HelpCircle },
+  { name: 'Sécurité & accès', href: '/admin/security', icon: Shield },
 ];
 
 export function AdminSidebar() {
