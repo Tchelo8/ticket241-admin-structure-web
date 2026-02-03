@@ -9,6 +9,7 @@ import EventsListPage from "@/pages/admin/EventsListPage";
 import CreateEventPage from "@/pages/admin/CreateEventPage";
 import EditEventPage from "@/pages/admin/EditEventPage";
 import EventDetailPage from "@/pages/admin/EventDetailPage";
+import OrganizationPage from "@/pages/admin/OrganizationPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="events/create" element={<CreateEventPage />} />
             <Route path="events/:uuid" element={<EventDetailPage />} />
             <Route path="events/:uuid/edit" element={<EditEventPage />} />
+            <Route path="organization" element={<OrganizationPage />} />
           </Route>
           
           {/* Catch-all */}
