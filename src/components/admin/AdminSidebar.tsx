@@ -24,7 +24,7 @@ const navigation = [
   { name: 'Événements', href: '/admin/events', icon: CalendarDays },
   { name: 'Créer un événement', href: '/admin/events/create', icon: PlusCircle },
   { name: 'Ma structure', href: '/admin/organization', icon: Building2 },
-  { name: 'Suivi des ventes', href: '/admin/sales', icon: TrendingUp },
+  { name: 'Statistiques & Performances', href: '/admin/statistics', icon: TrendingUp },
   { name: 'Agent de Scan', href: '/admin/scan-agents', icon: ScanLine },
   { name: 'Accès & contrôle', href: '/admin/access-control', icon: KeyRound },
   { name: 'Notifications', href: '/admin/notifications', icon: Bell },

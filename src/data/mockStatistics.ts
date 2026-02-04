@@ -1,0 +1,86 @@
+import { EventStatistics, GlobalStatistics } from '@/types/statistics';
+
+export const mockEventStatistics: EventStatistics[] = [
+  {
+    eventId: 'evt-a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    eventTitle: 'Festival de Musique Libreville 2024',
+    eventDate: '2024-12-15',
+    ticketsSold: 1250,
+    ticketsScanned: 1180,
+    grossRevenue: 25000000,
+    platformCommission: 1250000,
+    netRevenue: 23750000,
+    participationRate: 94.4,
+    salesByCategory: [
+      { category: 'VIP', quantity: 150, revenue: 7500000, color: 'hsl(var(--primary))' },
+      { category: 'Standard', quantity: 800, revenue: 12000000, color: 'hsl(var(--accent))' },
+      { category: 'Early Bird', quantity: 300, revenue: 5500000, color: 'hsl(var(--secondary))' },
+    ],
+    dailySales: [
+      { date: '2024-11-01', sales: 45, revenue: 900000 },
+      { date: '2024-11-05', sales: 120, revenue: 2400000 },
+      { date: '2024-11-10', sales: 180, revenue: 3600000 },
+      { date: '2024-11-15', sales: 250, revenue: 5000000 },
+      { date: '2024-11-20', sales: 200, revenue: 4000000 },
+      { date: '2024-11-25', sales: 180, revenue: 3600000 },
+      { date: '2024-12-01', sales: 150, revenue: 3000000 },
+      { date: '2024-12-05', sales: 80, revenue: 1600000 },
+      { date: '2024-12-10', sales: 45, revenue: 900000 },
+    ],
+  },
+  {
+    eventId: 'evt-b2c3d4e5-f6a7-8901-bcde-f23456789012',
+    eventTitle: 'Conférence Tech Africa',
+    eventDate: '2024-11-28',
+    ticketsSold: 450,
+    ticketsScanned: 420,
+    grossRevenue: 18000000,
+    platformCommission: 900000,
+    netRevenue: 17100000,
+    participationRate: 93.3,
+    salesByCategory: [
+      { category: 'Standard', quantity: 350, revenue: 14000000, color: 'hsl(var(--primary))' },
+      { category: 'Early Bird', quantity: 100, revenue: 4000000, color: 'hsl(var(--accent))' },
+    ],
+    dailySales: [
+      { date: '2024-10-15', sales: 50, revenue: 2000000 },
+      { date: '2024-10-20', sales: 80, revenue: 3200000 },
+      { date: '2024-10-25', sales: 100, revenue: 4000000 },
+      { date: '2024-11-01', sales: 90, revenue: 3600000 },
+      { date: '2024-11-10', sales: 70, revenue: 2800000 },
+      { date: '2024-11-20', sales: 60, revenue: 2400000 },
+    ],
+  },
+  {
+    eventId: 'evt-d4e5f6a7-b8c9-0123-defa-456789012345',
+    eventTitle: 'Match de Football - Panthers vs Lions',
+    eventDate: '2024-11-30',
+    ticketsSold: 3500,
+    ticketsScanned: 3200,
+    grossRevenue: 35000000,
+    platformCommission: 1750000,
+    netRevenue: 33250000,
+    participationRate: 91.4,
+    salesByCategory: [
+      { category: 'VIP', quantity: 200, revenue: 5000000, color: 'hsl(var(--primary))' },
+      { category: 'Tribune', quantity: 1500, revenue: 15000000, color: 'hsl(var(--accent))' },
+      { category: 'Pelouse', quantity: 1800, revenue: 15000000, color: 'hsl(var(--secondary))' },
+    ],
+    dailySales: [
+      { date: '2024-11-15', sales: 500, revenue: 5000000 },
+      { date: '2024-11-18', sales: 800, revenue: 8000000 },
+      { date: '2024-11-22', sales: 1000, revenue: 10000000 },
+      { date: '2024-11-25', sales: 700, revenue: 7000000 },
+      { date: '2024-11-28', sales: 500, revenue: 5000000 },
+    ],
+  },
+];
+
+export const mockGlobalStatistics: GlobalStatistics = {
+  totalTicketsSold: 5200,
+  totalGrossRevenue: 78000000,
+  totalNetRevenue: 74100000,
+  totalCommission: 3900000,
+  averageParticipationRate: 93.0,
+  totalEvents: 3,
+};
