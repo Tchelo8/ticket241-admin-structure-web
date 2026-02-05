@@ -3,17 +3,15 @@ import {
   LayoutDashboard, 
   CalendarDays, 
   PlusCircle, 
-  Ticket,
+  Ticket,  
   LogOut,
   Menu,
   X,
   Building2,
   TrendingUp,
-  ScanLine,
   KeyRound,
   Bell,
-  HelpCircle,
-  Shield
+  Landmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -25,11 +23,9 @@ const navigation = [
   { name: 'Créer un événement', href: '/admin/events/create', icon: PlusCircle },
   { name: 'Ma structure', href: '/admin/organization', icon: Building2 },
   { name: 'Statistiques & Performances', href: '/admin/statistics', icon: TrendingUp },
-  { name: 'Agent de Scan', href: '/admin/scan-agents', icon: ScanLine },
   { name: 'Accès & contrôle', href: '/admin/access-control', icon: KeyRound },
   { name: 'Notifications', href: '/admin/notifications', icon: Bell },
-  { name: 'Support & assistance', href: '/admin/support', icon: HelpCircle },
-  { name: 'Sécurité & accès', href: '/admin/security', icon: Shield },
+  { name: 'Finances & paiements', href: '/admin/finances', icon: Landmark },
 ];
 
 export function AdminSidebar() {

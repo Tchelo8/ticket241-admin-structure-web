@@ -1,0 +1,138 @@
+ import { Transaction, EventRevenue, FinancialSummary, PaymentInfo } from '@/types/finance';
+ 
+ export const mockFinancialSummary: FinancialSummary = {
+   currentBalance: 2450000,
+   pendingPayouts: 850000,
+   totalEarnings: 15750000,
+   totalCommissions: 1575000,
+   lastPayoutDate: '2024-01-15',
+   lastPayoutAmount: 1200000,
+ };
+ 
+ export const mockEventRevenues: EventRevenue[] = [
+   {
+     eventId: '1',
+     eventTitle: 'Concert Live Libreville',
+     eventDate: '2024-02-15',
+     ticketsSold: 450,
+     grossRevenue: 4500000,
+     platformCommission: 450000,
+     commissionRate: 10,
+     netRevenue: 4050000,
+     payoutStatus: 'completed',
+     payoutDate: '2024-02-20',
+   },
+   {
+     eventId: '2',
+     eventTitle: 'Festival Gabon Culture',
+     eventDate: '2024-03-01',
+     ticketsSold: 820,
+     grossRevenue: 8200000,
+     platformCommission: 820000,
+     commissionRate: 10,
+     netRevenue: 7380000,
+     payoutStatus: 'processing',
+   },
+   {
+     eventId: '3',
+     eventTitle: 'Soirée VIP Networking',
+     eventDate: '2024-03-10',
+     ticketsSold: 120,
+     grossRevenue: 3600000,
+     platformCommission: 360000,
+     commissionRate: 10,
+     netRevenue: 3240000,
+     payoutStatus: 'pending',
+   },
+ ];
+ 
+ export const mockTransactions: Transaction[] = [
+   {
+     id: '1',
+     type: 'sale',
+     status: 'completed',
+     amount: 15000,
+     eventId: '3',
+     eventTitle: 'Soirée VIP Networking',
+     description: 'Vente billet VIP',
+     date: '2024-03-10T14:30:00',
+     reference: 'TRX-2024-001',
+   },
+   {
+     id: '2',
+     type: 'sale',
+     status: 'completed',
+     amount: 10000,
+     eventId: '3',
+     eventTitle: 'Soirée VIP Networking',
+     description: 'Vente billet Standard',
+     date: '2024-03-10T12:15:00',
+     reference: 'TRX-2024-002',
+   },
+   {
+     id: '3',
+     type: 'commission',
+     status: 'completed',
+     amount: -1500,
+     eventId: '3',
+     eventTitle: 'Soirée VIP Networking',
+     description: 'Commission plateforme (10%)',
+     date: '2024-03-10T14:30:00',
+     reference: 'COM-2024-001',
+   },
+   {
+     id: '4',
+     type: 'payout',
+     status: 'completed',
+     amount: 4050000,
+     eventId: '1',
+     eventTitle: 'Concert Live Libreville',
+     description: 'Versement revenus événement',
+     date: '2024-02-20T10:00:00',
+     reference: 'PAY-2024-001',
+   },
+   {
+     id: '5',
+     type: 'refund',
+     status: 'completed',
+     amount: -10000,
+     eventId: '1',
+     eventTitle: 'Concert Live Libreville',
+     description: 'Remboursement billet annulé',
+     date: '2024-02-14T16:45:00',
+     reference: 'REF-2024-001',
+   },
+   {
+     id: '6',
+     type: 'sale',
+     status: 'pending',
+     amount: 25000,
+     eventId: '2',
+     eventTitle: 'Festival Gabon Culture',
+     description: 'Vente billet Premium',
+     date: '2024-03-08T09:20:00',
+     reference: 'TRX-2024-003',
+   },
+ ];
+ 
+ export const mockPaymentInfo: PaymentInfo[] = [
+   {
+     id: '1',
+     method: 'bank_transfer',
+     isPrimary: true,
+     details: {
+       bankName: 'BGFI Bank',
+       accountNumber: '**** **** **** 4521',
+       accountHolder: 'EventPro Gabon SARL',
+     },
+   },
+   {
+     id: '2',
+     method: 'mobile_money',
+     isPrimary: false,
+     details: {
+       mobileProvider: 'Airtel Money',
+       phoneNumber: '+241 77 ** ** 00',
+     },
+   },
+ ];
