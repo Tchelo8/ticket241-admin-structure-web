@@ -12,6 +12,7 @@ import EventDetailPage from "@/pages/admin/EventDetailPage";
 import OrganizationPage from "@/pages/admin/OrganizationPage";
 import StatisticsPage from "@/pages/admin/StatisticsPage";
 import AccessControlPage from "@/pages/admin/AccessControlPage";
+import NotificationsPage from "@/pages/admin/NotificationsPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="organization" element={<OrganizationPage />} />
             <Route path="statistics" element={<StatisticsPage />} />
             <Route path="access-control" element={<AccessControlPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
           
           {/* Catch-all */}
