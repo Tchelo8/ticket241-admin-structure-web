@@ -13,6 +13,7 @@ import OrganizationPage from "@/pages/admin/OrganizationPage";
 import StatisticsPage from "@/pages/admin/StatisticsPage";
 import AccessControlPage from "@/pages/admin/AccessControlPage";
 import NotificationsPage from "@/pages/admin/NotificationsPage";
+import FinancesPage from "@/pages/admin/FinancesPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="statistics" element={<StatisticsPage />} />
             <Route path="access-control" element={<AccessControlPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="finances" element={<FinancesPage />} />
           </Route>
           
           {/* Catch-all */}
