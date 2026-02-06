@@ -27,7 +27,6 @@ import {
   Plus, 
   Search,
   Shield,
-  UserCheck,
   AlertTriangle,
   CheckCircle
 } from 'lucide-react';
@@ -37,13 +36,16 @@ import { TeamMemberCard } from '@/components/admin/access-control/TeamMemberCard
 import { ScanAgentCard } from '@/components/admin/access-control/ScanAgentCard';
 import { EventControlCard } from '@/components/admin/access-control/EventControlCard';
 import { ControlEventBadge } from '@/components/admin/access-control/ControlEventBadge';
+import { TeamMemberDialog } from '@/components/admin/access-control/TeamMemberDialog';
+import { ScanAgentDialog } from '@/components/admin/access-control/ScanAgentDialog';
+import { DeleteConfirmDialog } from '@/components/admin/access-control/DeleteConfirmDialog';
 import { 
   mockTeamMembers, 
   mockScanAgents, 
   mockControlEvents, 
   mockEventControlStats 
 } from '@/data/mockAccessControl';
-import { TeamMember, ScanAgent, TEAM_ROLES } from '@/types/accessControl';
+import { TeamMember, ScanAgent, TeamRole } from '@/types/accessControl';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AccessControlPage() {
@@ -56,6 +58,14 @@ export default function AccessControlPage() {
   const [historyEventFilter, setHistoryEventFilter] = useState('all');
   const [historyTypeFilter, setHistoryTypeFilter] = useState('all');
 
+  // Dialog states
+  const [showTeamMemberDialog, setShowTeamMemberDialog] = useState(false);
+  const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
+  const [showScanAgentDialog, setShowScanAgentDialog] = useState(false);
+  const [selectedScanAgent, setSelectedScanAgent] = useState<ScanAgent | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'team' | 'agent'; item: TeamMember | ScanAgent } | null>(null);
+
   // Event names mapping for display
   const eventNames: Record<string, string> = {
     'evt-001': 'Concert Afrobeat Night',
@@ -63,20 +73,49 @@ export default function AccessControlPage() {
     'evt-003': 'Soirée Jazz & Wine',
   };
 
+  const availableEvents = [
+    { id: 'evt-001', name: 'Concert Afrobeat Night' },
+    { id: 'evt-002', name: 'Festival Gaboma' },
+    { id: 'evt-003', name: 'Soirée Jazz & Wine' },
+  ];
+
   // Handlers for team members
+  const handleAddTeamMember = () => {
+    setSelectedTeamMember(null);
+    setShowTeamMemberDialog(true);
+  };
+
   const handleEditTeamMember = (member: TeamMember) => {
-    toast({
-      title: 'Modification',
-      description: `Ouverture du formulaire pour ${member.name}`,
-    });
+    setSelectedTeamMember(member);
+    setShowTeamMemberDialog(true);
+  };
+
+  const handleSaveTeamMember = (memberData: Omit<TeamMember, 'id' | 'createdAt' | 'lastLogin'> & { id?: string }) => {
+    if (memberData.id) {
+      // Update existing member
+      setTeamMembers(prev => prev.map(m => 
+        m.id === memberData.id 
+          ? { ...m, ...memberData }
+          : m
+      ));
+    } else {
+      // Add new member
+      const newMember: TeamMember = {
+        id: `member-${Date.now()}`,
+        name: memberData.name,
+        email: memberData.email,
+        phone: memberData.phone,
+        role: memberData.role,
+        isActive: memberData.isActive,
+        createdAt: new Date(),
+      };
+      setTeamMembers(prev => [...prev, newMember]);
+    }
   };
 
   const handleDeleteTeamMember = (member: TeamMember) => {
-    setTeamMembers(prev => prev.filter(m => m.id !== member.id));
-    toast({
-      title: 'Membre supprimé',
-      description: `${member.name} a été supprimé de l'équipe`,
-    });
+    setDeleteTarget({ type: 'team', item: member });
+    setShowDeleteDialog(true);
   };
 
   const handleToggleTeamMember = (member: TeamMember) => {
@@ -90,19 +129,42 @@ export default function AccessControlPage() {
   };
 
   // Handlers for scan agents
+  const handleAddScanAgent = () => {
+    setSelectedScanAgent(null);
+    setShowScanAgentDialog(true);
+  };
+
   const handleEditScanAgent = (agent: ScanAgent) => {
-    toast({
-      title: 'Modification',
-      description: `Ouverture du formulaire pour ${agent.name}`,
-    });
+    setSelectedScanAgent(agent);
+    setShowScanAgentDialog(true);
+  };
+
+  const handleSaveScanAgent = (agentData: Omit<ScanAgent, 'id' | 'createdAt' | 'lastActivity'> & { id?: string }) => {
+    if (agentData.id) {
+      // Update existing agent
+      setScanAgents(prev => prev.map(a => 
+        a.id === agentData.id 
+          ? { ...a, ...agentData }
+          : a
+      ));
+    } else {
+      // Add new agent
+      const newAgent: ScanAgent = {
+        id: `agent-${Date.now()}`,
+        name: agentData.name,
+        phone: agentData.phone,
+        pin: agentData.pin,
+        assignedEvents: agentData.assignedEvents,
+        isActive: agentData.isActive,
+        createdAt: new Date(),
+      };
+      setScanAgents(prev => [...prev, newAgent]);
+    }
   };
 
   const handleDeleteScanAgent = (agent: ScanAgent) => {
-    setScanAgents(prev => prev.filter(a => a.id !== agent.id));
-    toast({
-      title: 'Agent supprimé',
-      description: `${agent.name} a été supprimé`,
-    });
+    setDeleteTarget({ type: 'agent', item: agent });
+    setShowDeleteDialog(true);
   };
 
   const handleToggleScanAgent = (agent: ScanAgent) => {
@@ -113,6 +175,30 @@ export default function AccessControlPage() {
       title: agent.isActive ? 'Agent désactivé' : 'Agent activé',
       description: `${agent.name} a été ${agent.isActive ? 'désactivé' : 'activé'}`,
     });
+  };
+
+  // Confirm delete handler
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    if (deleteTarget.type === 'team') {
+      const member = deleteTarget.item as TeamMember;
+      setTeamMembers(prev => prev.filter(m => m.id !== member.id));
+      toast({
+        title: 'Membre supprimé',
+        description: `${member.name} a été supprimé de l'équipe`,
+      });
+    } else {
+      const agent = deleteTarget.item as ScanAgent;
+      setScanAgents(prev => prev.filter(a => a.id !== agent.id));
+      toast({
+        title: 'Agent supprimé',
+        description: `${agent.name} a été supprimé`,
+      });
+    }
+
+    setShowDeleteDialog(false);
+    setDeleteTarget(null);
   };
 
   // Filtered data
@@ -267,7 +353,7 @@ export default function AccessControlPage() {
                 className="pl-9"
               />
             </div>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={handleAddTeamMember}>
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Ajouter un membre</span>
               <span className="sm:hidden">Ajouter</span>
@@ -294,6 +380,12 @@ export default function AccessControlPage() {
                 <p className="text-sm text-muted-foreground">
                   {searchTeam ? 'Essayez avec d\'autres termes' : 'Ajoutez votre premier membre d\'équipe'}
                 </p>
+                {!searchTeam && (
+                  <Button className="mt-4" onClick={handleAddTeamMember}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Ajouter un membre
+                  </Button>
+                )}
               </CardContent>
             </Card>
           )}
@@ -311,7 +403,7 @@ export default function AccessControlPage() {
                 className="pl-9"
               />
             </div>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={handleAddScanAgent}>
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Ajouter un agent</span>
               <span className="sm:hidden">Ajouter</span>
@@ -354,6 +446,12 @@ export default function AccessControlPage() {
                 <p className="text-sm text-muted-foreground">
                   {searchAgents ? 'Essayez avec d\'autres termes' : 'Ajoutez votre premier agent de scan'}
                 </p>
+                {!searchAgents && (
+                  <Button className="mt-4" onClick={handleAddScanAgent}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Ajouter un agent
+                  </Button>
+                )}
               </CardContent>
             </Card>
           )}
@@ -436,7 +534,7 @@ export default function AccessControlPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>{event.agentName}</span>
-                    <span>{format(event.timestamp, 'dd/MM HH:mm:ss', { locale: fr })}</span>
+                    <span>{format(event.timestamp, 'dd/MM HH:mm', { locale: fr })}</span>
                   </div>
                   {event.details && (
                     <p className="text-xs text-muted-foreground bg-muted p-2 rounded">
@@ -449,52 +547,80 @@ export default function AccessControlPage() {
           </div>
 
           {/* Desktop table view */}
-          <Card className="hidden lg:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date/Heure</TableHead>
-                  <TableHead>Événement</TableHead>
-                  <TableHead>Code billet</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Agent</TableHead>
-                  <TableHead>Détails</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredHistory.map(event => (
-                  <TableRow key={event.id}>
-                    <TableCell className="text-muted-foreground whitespace-nowrap">
-                      {format(event.timestamp, 'dd/MM/yyyy HH:mm:ss', { locale: fr })}
-                    </TableCell>
-                    <TableCell className="font-medium">{event.eventName}</TableCell>
-                    <TableCell className="font-mono text-sm">{event.ticketCode}</TableCell>
-                    <TableCell>
-                      <ControlEventBadge type={event.type} />
-                    </TableCell>
-                    <TableCell>{event.agentName}</TableCell>
-                    <TableCell className="text-muted-foreground max-w-[200px] truncate">
-                      {event.details || '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
+          <div className="hidden lg:block">
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date/Heure</TableHead>
+                      <TableHead>Événement</TableHead>
+                      <TableHead>Code billet</TableHead>
+                      <TableHead>Agent</TableHead>
+                      <TableHead>Statut</TableHead>
+                      <TableHead>Détails</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredHistory.map(event => (
+                      <TableRow key={event.id}>
+                        <TableCell className="text-sm">
+                          {format(event.timestamp, 'dd/MM/yyyy HH:mm:ss', { locale: fr })}
+                        </TableCell>
+                        <TableCell className="font-medium">{event.eventName}</TableCell>
+                        <TableCell className="font-mono text-sm">{event.ticketCode}</TableCell>
+                        <TableCell>{event.agentName}</TableCell>
+                        <TableCell>
+                          <ControlEventBadge type={event.type} />
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
+                          {event.details || '-'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
 
           {filteredHistory.length === 0 && (
             <Card>
               <CardContent className="p-8 text-center">
                 <History className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <h3 className="font-medium text-foreground">Aucun événement trouvé</h3>
+                <h3 className="font-medium text-foreground">Aucun historique trouvé</h3>
                 <p className="text-sm text-muted-foreground">
-                  Aucune action de contrôle ne correspond à vos critères
+                  Les événements de contrôle apparaîtront ici
                 </p>
               </CardContent>
             </Card>
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Dialogs */}
+      <TeamMemberDialog
+        member={selectedTeamMember}
+        open={showTeamMemberDialog}
+        onOpenChange={setShowTeamMemberDialog}
+        onSave={handleSaveTeamMember}
+      />
+
+      <ScanAgentDialog
+        agent={selectedScanAgent}
+        open={showScanAgentDialog}
+        onOpenChange={setShowScanAgentDialog}
+        onSave={handleSaveScanAgent}
+        availableEvents={availableEvents}
+      />
+
+      <DeleteConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title={deleteTarget?.type === 'team' ? 'Supprimer ce membre ?' : 'Supprimer cet agent ?'}
+        description={`Êtes-vous sûr de vouloir supprimer ${deleteTarget?.item.name} ? Cette action est irréversible.`}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
