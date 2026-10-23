@@ -1,85 +1,122 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
-  Building2, 
-  Save, 
-  Upload, 
-  X, 
-  CheckCircle2, 
+import {
+  Building2,
+  Save,
+  Upload,
+  X,
+  CheckCircle2,
   AlertCircle,
   Mail,
   Phone,
   MapPin,
   User,
   FileText,
-  BadgeCheck
+  BadgeCheck,
+  Loader2,
+  Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { mockOrganization } from '@/data/mockOrganization';
-import { OrganizationFormData, ORGANIZATION_TYPES, CONTRACT_TYPES } from '@/types/organization';
-import { CITIES } from '@/types/event';
+import { OrganizationFormData } from '@/types/organization';
+import { recuperer, mettreAJour, obtenirUtilisateur } from '@/lib/Transmission';
 
 const organizationSchema = z.object({
-  nom: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   description: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
-  location: z.string().min(1, 'Veuillez sélectionner une ville'),
   lieu: z.string().optional(),
-  gerant: z.string().min(2, 'Le nom du gérant est requis'),
-  contact: z.string().min(8, 'Numéro de téléphone invalide'),
-  contactGerant: z.string().optional(),
-  email: z.string().email('Email invalide'),
-  type: z.string().min(1, 'Veuillez sélectionner un type'),
+  location: z.string().optional(),
   logoUrl: z.string().optional(),
-  typeContrat: z.string().min(1, 'Veuillez sélectionner un type de contrat'),
+  nom: z.string().optional(),
+  email: z.string().optional(),
+  contact: z.string().optional(),
+  contactGerant: z.string().optional(),
+  gerant: z.string().optional(),
+  type: z.string().optional(),
+  typeContrat: z.string().optional(),
 });
 
+interface SessionUtilisateur {
+  phone: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  structureId: number;
+  roles: string[];
+}
+
+interface StructureData {
+  id: number;
+  uuid: string;
+  nom: string;
+  email: string;
+  contact: string;
+  contactGerant: string;
+  description: string;
+  gerant: string;
+  location: string;
+  lieu: string;
+  logoUrl: string;
+  type: string;
+  typeContrat: string;
+  status: boolean;
+  isVerified: boolean;
+  validatedEventCount: number;
+}
+
 export default function OrganizationPage() {
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [logoPreview, setLogoPreview] = useState<string>(mockOrganization.logoUrl);
+  const [logoPreview, setLogoPreview] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [structureData, setStructureData] = useState<StructureData | null>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    reset,
     formState: { errors },
   } = useForm<OrganizationFormData>({
     resolver: zodResolver(organizationSchema),
-    defaultValues: {
-      nom: mockOrganization.nom,
-      description: mockOrganization.description,
-      location: mockOrganization.location.toLowerCase(),
-      lieu: mockOrganization.lieu,
-      gerant: mockOrganization.gerant,
-      contact: mockOrganization.contact,
-      contactGerant: mockOrganization.contactGerant,
-      email: mockOrganization.email,
-      type: mockOrganization.type,
-      logoUrl: mockOrganization.logoUrl,
-      typeContrat: mockOrganization.typeContrat,
-    },
   });
 
-  const watchedType = watch('type');
-  const watchedLocation = watch('location');
-  const watchedTypeContrat = watch('typeContrat');
+  useEffect(() => {
+    const chargerStructure = async () => {
+      const session = obtenirUtilisateur<SessionUtilisateur>();
+      if (!session?.structureId) {
+        setIsLoading(false);
+        return;
+      }
+      const { succes, donnees } = await recuperer<StructureData>(
+        `/api/events/structures/${session.structureId}`
+      );
+      if (succes && donnees) {
+        setStructureData(donnees);
+        setLogoPreview(donnees.logoUrl ?? '');
+        reset({
+          nom: donnees.nom,
+          description: donnees.description,
+          location: donnees.location,
+          lieu: donnees.lieu,
+          gerant: donnees.gerant,
+          contact: donnees.contact,
+          contactGerant: donnees.contactGerant,
+          email: donnees.email,
+          type: donnees.type,
+          logoUrl: donnees.logoUrl,
+          typeContrat: donnees.typeContrat,
+        });
+      }
+      setIsLoading(false);
+    };
+    chargerStructure();
+  }, []);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -93,77 +130,91 @@ export default function OrganizationPage() {
   const handleRemoveLogo = () => {
     setLogoPreview('');
     setValue('logoUrl', '');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const onSubmit = async (data: OrganizationFormData) => {
+    if (!structureData) return;
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Organization data:', data);
-    toast({
-      title: 'Modifications enregistrées',
-      description: 'Les informations de votre structure ont été mises à jour.',
+    await mettreAJour(`/api/events/structures/${structureData.id}`, data, {
+      messageSucces: 'Les informations de votre structure ont été mises à jour.',
+      messageErreur: 'Impossible de sauvegarder les modifications.',
     });
     setIsSubmitting(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    // Conteneur principal — max-width + centré + padding horizontal confortable
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Ma structure</h1>
-          <p className="text-muted-foreground mt-1">
-            Gérez les informations de votre organisation
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Ma structure</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gérez les informations de votre organisation
+        </p>
       </div>
 
-      {/* Verification Status Card */}
-      <Card className={mockOrganization.isVerified ? 'border-primary/50 bg-primary/5' : 'border-destructive/50 bg-destructive/5'}>
-        <CardContent className="flex items-center gap-4 py-4">
-          {mockOrganization.isVerified ? (
+      {/* Statut de vérification */}
+      <Card
+        className={
+          structureData?.isVerified
+            ? 'border-primary/40 bg-primary/5'
+            : 'border-destructive/40 bg-destructive/5'
+        }
+      >
+        <CardContent className="flex items-center gap-4 px-6 py-4">
+          {structureData?.isVerified ? (
             <>
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <CheckCircle2 className="h-6 w-6 text-primary" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-primary">Structure vérifiée</h3>
-                  <Badge variant="outline" className="border-primary text-primary">
+                  <h3 className="font-semibold text-primary text-sm">Structure vérifiée</h3>
+                  <Badge variant="outline" className="border-primary text-primary text-xs">
                     <BadgeCheck className="h-3 w-3 mr-1" />
                     Vérifié
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Votre structure a été vérifiée et validée par notre équipe.
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-primary">{mockOrganization.validatedEventCount}</p>
+              <div className="text-right shrink-0">
+                <p className="text-xl font-bold text-primary">{structureData?.validatedEventCount}</p>
                 <p className="text-xs text-muted-foreground">événements validés</p>
               </div>
             </>
           ) : (
             <>
-              <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertCircle className="h-6 w-6 text-destructive" />
+              <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                <AlertCircle className="h-5 w-5 text-destructive" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-destructive">Structure non vérifiée</h3>
-                  <Badge variant="outline" className="border-destructive text-destructive">
+                  <h3 className="font-semibold text-destructive text-sm">Structure non vérifiée</h3>
+                  <Badge variant="outline" className="border-destructive text-destructive text-xs">
                     En attente
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Votre structure est en attente de vérification. Complétez toutes les informations pour accélérer le processus.
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  En attente de vérification. Complétez toutes les informations pour accélérer le processus.
                 </p>
               </div>
-              <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-destructive text-destructive hover:bg-destructive/10 shrink-0"
+              >
                 Demander la vérification
               </Button>
             </>
@@ -172,281 +223,266 @@ export default function OrganizationPage() {
       </Card>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+        {/* Logo + Infos générales */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Logo Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
+
+          {/* Logo */}
+          <Card className="lg:col-span-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
                 Logo
               </CardTitle>
-              <CardDescription>
-                Le logo de votre structure
-              </CardDescription>
+              <CardDescription className="text-xs">Le logo de votre structure</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col items-center gap-4">
-                {logoPreview ? (
-                  <div className="relative">
-                    <img
-                      src={logoPreview}
-                      alt="Logo"
-                      className="h-32 w-32 rounded-xl object-cover border-2 border-border"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop';
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6"
-                      onClick={handleRemoveLogo}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="h-32 w-32 rounded-xl border-2 border-dashed border-border flex items-center justify-center bg-muted/50">
-                    <Building2 className="h-12 w-12 text-muted-foreground" />
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Changer le logo
-                </Button>
-              </div>
+            <CardContent className="flex flex-col items-center gap-4 px-6 pb-6">
+              {logoPreview ? (
+                <div className="relative">
+                  <img
+                    src={logoPreview}
+                    alt="Logo"
+                    className="h-28 w-28 rounded-xl object-cover border border-border"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop';
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={handleRemoveLogo}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="h-28 w-28 rounded-xl border-2 border-dashed border-border flex items-center justify-center bg-muted/40">
+                  <Building2 className="h-10 w-10 text-muted-foreground" />
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full text-xs"
+              >
+                <Upload className="h-3.5 w-3.5 mr-2" />
+                Changer le logo
+              </Button>
             </CardContent>
           </Card>
 
-          {/* General Info Section */}
+          {/* Informations générales */}
           <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <FileText className="h-4 w-4" />
                 Informations générales
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 Les informations principales de votre structure
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="px-6 pb-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nom">Nom de la structure *</Label>
+
+                {/* Nom — non modifiable */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                    Nom de la structure
+                    <Lock className="h-3 w-3" />
+                  </Label>
                   <Input
-                    id="nom"
-                    {...register('nom')}
-                    placeholder="Nom de votre structure"
+                    value={structureData?.nom ?? ''}
+                    readOnly
+                    className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
                   />
-                  {errors.nom && (
-                    <p className="text-sm text-destructive">{errors.nom.message}</p>
-                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="type">Type de structure *</Label>
-                  <Select
-                    value={watchedType}
-                    onValueChange={(value) => setValue('type', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner un type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ORGANIZATION_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.type && (
-                    <p className="text-sm text-destructive">{errors.type.message}</p>
-                  )}
+                {/* Type — non modifiable */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                    Type de structure
+                    <Lock className="h-3 w-3" />
+                  </Label>
+                  <Input
+                    value={structureData?.type ?? ''}
+                    readOnly
+                    className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
+                  />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
+              {/* Description — modifiable */}
+              <div className="space-y-1.5">
+                <Label htmlFor="description" className="text-xs">Description *</Label>
                 <Textarea
                   id="description"
                   {...register('description')}
                   placeholder="Décrivez votre structure..."
-                  rows={4}
+                  rows={3}
+                  className="text-sm resize-none"
                 />
                 {errors.description && (
-                  <p className="text-sm text-destructive">{errors.description.message}</p>
+                  <p className="text-xs text-destructive">{errors.description.message}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="typeContrat">Type de contrat *</Label>
-                  <Select
-                    value={watchedTypeContrat}
-                    onValueChange={(value) => setValue('typeContrat', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner un type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CONTRACT_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.typeContrat && (
-                    <p className="text-sm text-destructive">{errors.typeContrat.message}</p>
-                  )}
-                </div>
+              {/* Type de contrat — non modifiable */}
+              <div className="space-y-1.5">
+                <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                  Type de contrat
+                  <Lock className="h-3 w-3" />
+                </Label>
+                <Input
+                  value={structureData?.typeContrat ?? ''}
+                  readOnly
+                  className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
+                />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Contact & Location Section */}
+        {/* Contact & Localisation */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Contact Info */}
+
+          {/* Contacts — non modifiables */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Phone className="h-5 w-5" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Phone className="h-4 w-4" />
                 Contacts
               </CardTitle>
-              <CardDescription>
-                Les coordonnées de votre structure
-              </CardDescription>
+              <CardDescription className="text-xs">Les coordonnées de votre structure</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">
-                  <Mail className="h-4 w-4 inline mr-2" />
-                  Email *
+            <CardContent className="px-6 pb-6 space-y-3">
+
+              <div className="space-y-1.5">
+                <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                  <Mail className="h-3.5 w-3.5" />
+                  Email
+                  <Lock className="h-3 w-3" />
                 </Label>
                 <Input
-                  id="email"
-                  type="email"
-                  {...register('email')}
-                  placeholder="contact@example.com"
+                  value={structureData?.email ?? ''}
+                  readOnly
+                  className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
                 />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
-                )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="contact">
-                  <Phone className="h-4 w-4 inline mr-2" />
-                  Téléphone principal *
+              <div className="space-y-1.5">
+                <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                  <Phone className="h-3.5 w-3.5" />
+                  Téléphone principal
+                  <Lock className="h-3 w-3" />
                 </Label>
                 <Input
-                  id="contact"
-                  {...register('contact')}
-                  placeholder="+241 00 00 00 00"
+                  value={structureData?.contact ?? ''}
+                  readOnly
+                  className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
                 />
-                {errors.contact && (
-                  <p className="text-sm text-destructive">{errors.contact.message}</p>
-                )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="gerant">
-                  <User className="h-4 w-4 inline mr-2" />
-                  Nom du gérant *
+              <div className="space-y-1.5">
+                <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                  <User className="h-3.5 w-3.5" />
+                  Nom du gérant
+                  <Lock className="h-3 w-3" />
                 </Label>
                 <Input
-                  id="gerant"
-                  {...register('gerant')}
-                  placeholder="Nom complet du gérant"
+                  value={structureData?.gerant ?? ''}
+                  readOnly
+                  className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
                 />
-                {errors.gerant && (
-                  <p className="text-sm text-destructive">{errors.gerant.message}</p>
-                )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="contactGerant">
-                  <Phone className="h-4 w-4 inline mr-2" />
+              <div className="space-y-1.5">
+                <Label className="text-xs flex items-center gap-1.5 text-muted-foreground">
+                  <Phone className="h-3.5 w-3.5" />
                   Téléphone du gérant
+                  <Lock className="h-3 w-3" />
                 </Label>
                 <Input
-                  id="contactGerant"
-                  {...register('contactGerant')}
-                  placeholder="+241 00 00 00 00"
+                  value={structureData?.contactGerant ?? ''}
+                  readOnly
+                  className="h-9 text-sm bg-muted cursor-not-allowed text-muted-foreground"
                 />
               </div>
             </CardContent>
           </Card>
 
-          {/* Location Info */}
+          {/* Localisation — modifiable */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
                 Localisation
               </CardTitle>
-              <CardDescription>
-                L'adresse de votre structure
-              </CardDescription>
+              <CardDescription className="text-xs">L'adresse de votre structure</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="location">Ville *</Label>
-                <Select
-                  value={watchedLocation}
-                  onValueChange={(value) => setValue('location', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une ville" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CITIES.map((city) => (
-                      <SelectItem key={city.value} value={city.value}>
-                        {city.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.location && (
-                  <p className="text-sm text-destructive">{errors.location.message}</p>
-                )}
-              </div>
+            <CardContent className="px-6 pb-6 space-y-3">
 
-              <div className="space-y-2">
-                <Label htmlFor="lieu">Adresse complète</Label>
-                <Textarea
+              <div className="space-y-1.5">
+                <Label htmlFor="lieu" className="text-xs">Ville</Label>
+                <Input
                   id="lieu"
                   {...register('lieu')}
+                  placeholder="Ville"
+                  className="h-9 text-sm"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="location" className="text-xs">Adresse complète</Label>
+                <Textarea
+                  id="location"
+                  {...register('location')}
                   placeholder="Quartier, rue, numéro..."
                   rows={3}
+                  className="text-sm resize-none"
                 />
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-end">
-          <Button type="submit" size="lg" disabled={isSubmitting}>
-            <Save className="h-4 w-4 mr-2" />
+        {/* Submit */}
+        <div className="flex justify-end pt-2">
+          <Button type="submit" size="sm" disabled={isSubmitting} className="px-6">
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
             {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
           </Button>
+        </div>
+
+        {/* Message d'avertissement + UUID */}
+        <div className="space-y-2 pt-4 border-t border-border">
+          <p className="text-xs text-destructive italic leading-relaxed">
+            ⚠ Les informations dans les cases non modifiables ne peuvent être changées qu'en
+            contactant l'administration de Ticket241 et en communiquant les informations à modifier
+            ainsi que votre numéro d'identification.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Mon numéro d'identification est :{' '}
+            <span className="font-mono font-medium text-foreground">
+              {structureData?.uuid ?? '—'}
+            </span>
+          </p>
         </div>
       </form>
     </div>

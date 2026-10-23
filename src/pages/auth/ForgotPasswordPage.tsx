@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Ticket, Phone, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Phone, ArrowLeft, CheckCircle, ArrowRight, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -29,15 +29,11 @@ export default function ForgotPasswordPage() {
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      phone: '',
-    },
+    defaultValues: { phone: '' },
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsLoading(true);
-    
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       setIsSubmitted(true);
@@ -45,29 +41,64 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-background">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center gap-3 mb-8 justify-center">
-          <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
-            <Ticket className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-2xl font-bold text-foreground">Ticket241</span>
+    <div className="min-h-screen flex">
+
+      {/* ── Côté gauche — Branding (identique à LoginPage) ── */}
+      <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent rounded-full blur-3xl" />
         </div>
 
-        {!isSubmitted ? (
-          <>
-            {/* Form header */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-2">
-                Mot de passe oublié
-              </h2>
-              <p className="text-muted-foreground">
-                Entrez votre numéro de téléphone pour recevoir un lien de réinitialisation
-              </p>
-            </div>
+        <div className="relative z-10 flex flex-col justify-center px-16 text-white">
+          <h1 className="text-5xl font-bold leading-tight mb-6">
+            Récupérez l'accès<br />
+            <span className="text-accent">à votre espace</span>
+          </h1>
 
-            {/* Form */}
+          <p className="text-xl text-primary-foreground/80 mb-12 max-w-md">
+            Pas de panique. Entrez votre numéro de téléphone et nous vous enverrons
+            un SMS et un Mail pour réinitialiser votre mot de passe.
+          </p>
+
+          <div className="space-y-4">
+            {[
+              'Procédure rapide et sécurisée',
+              'SMS et Mail envoyés en quelques secondes',
+              'Lien valable 30 minutes',
+              'Support disponible si besoin',
+            ].map((feature, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4 text-accent" />
+                </div>
+                <span className="text-primary-foreground/90">{feature}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Côté droit — Formulaire ── */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md">
+
+          {/* Logo */}
+          <div className="text-center mb-6 -mt-16">
+            <img
+              src="/images/logo/logo.png"
+              alt="Logo"
+              className="mx-auto mb-6 h-36 w-auto"
+            />
+            <p className="text-muted-foreground">
+              {isSubmitted
+                ? 'Vérifiez vos SMS'
+                : 'Réinitialisez votre mot de passe'}
+            </p>
+          </div>
+
+          {!isSubmitted ? (
+            /* ── Formulaire ── */
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
@@ -102,35 +133,37 @@ export default function ForgotPasswordPage() {
                       Envoi en cours...
                     </div>
                   ) : (
-                    'Envoyer le lien'
+                    <div className="flex items-center gap-2">
+                      <Send className="w-4 h-4" />
+                      Envoyer le lien
+                    </div>
                   )}
                 </Button>
               </form>
             </Form>
-          </>
-        ) : (
-          /* Success state */
-          <div className="text-center">
-            <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-8 h-8 text-success" />
+          ) : (
+            /* ── État succès ── */
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">Lien envoyé !</h2>
+              <p className="text-muted-foreground">
+                Si ce numéro est associé à un compte, vous recevrez un SMS avec
+                les instructions pour réinitialiser votre mot de passe.
+              </p>
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
-              Lien envoyé !
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Si ce numéro est associé à un compte, vous recevrez un SMS avec les instructions pour réinitialiser votre mot de passe.
-            </p>
-          </div>
-        )}
+          )}
 
-        {/* Back to login */}
-        <Link
-          to="/login"
-          className="flex items-center justify-center gap-2 mt-8 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Retour à la connexion
-        </Link>
+          {/* Retour connexion */}
+          <Link
+            to="/login"
+            className="flex items-center justify-center gap-2 mt-8 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Retour à la connexion
+          </Link>
+        </div>
       </div>
     </div>
   );

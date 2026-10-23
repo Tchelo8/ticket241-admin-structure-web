@@ -39,14 +39,15 @@ const App = () => (
             <Route index element={<DashboardPage />} />
             <Route path="events" element={<EventsListPage />} />
             <Route path="events/create" element={<CreateEventPage />} />
-            <Route path="events/:uuid" element={<EventDetailPage />} />
-            <Route path="events/:uuid/edit" element={<EditEventPage />} />
+            <Route path="events/:slug" element={<EventDetailPage />} />
+            <Route path="events/:slug/edit" element={<EditEventPage />} />
             <Route path="organization" element={<OrganizationPage />} />
             <Route path="statistics" element={<StatisticsPage />} />
             <Route path="access-control" element={<AccessControlPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="finances" element={<FinancesPage />} />
           </Route>
+          
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

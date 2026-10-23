@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CalendarDays, 
@@ -14,8 +14,9 @@ import {
   Landmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { deconnecter } from '@/lib/Transmission';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -28,15 +29,63 @@ const navigation = [
   { name: 'Finances & paiements', href: '/admin/finances', icon: Landmark },
 ];
 
+interface UserData {
+  id?: number;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
 export function AdminSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    // Récupérer les données utilisateur depuis localStorage
+    const userDataStr = localStorage.getItem('user_data');
+    if (userDataStr) {
+      try {
+        const parsedUserData: UserData = JSON.parse(userDataStr);
+        setUserData(parsedUserData);
+      } catch (error) {
+        console.error('Erreur lors du parsing des données utilisateur:', error);
+      }
+    }
+  }, []);
 
   const isActive = (path: string) => {
     if (path === '/admin') {
       return location.pathname === '/admin';
     }
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = () => {
+    const confirmer = window.confirm('Voulez-vous vraiment vous déconnecter ?');
+    
+    if (confirmer) {
+      setIsMobileMenuOpen(false);
+      deconnecter();
+    }
+  };
+
+  // Fonction pour obtenir les initiales
+  const getInitials = (firstName?: string, lastName?: string): string => {
+    if (!firstName && !lastName) return 'U'; // U pour User par défaut
+    
+    const firstInitial = firstName?.charAt(0).toUpperCase() || '';
+    const lastInitial = lastName?.charAt(0).toUpperCase() || '';
+    
+    return `${firstInitial}${lastInitial}` || 'U';
+  };
+
+  // Fonction pour obtenir le nom complet
+  const getFullName = (firstName?: string, lastName?: string): string => {
+    if (!firstName && !lastName) return 'Utilisateur';
+    
+    return `${firstName || ''} ${lastName || ''}`.trim();
   };
 
   const SidebarContent = () => (
@@ -79,20 +128,23 @@ export function AdminSidebar() {
       <div className="border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3 px-2 mb-3">
           <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center">
-            <span className="text-sm font-medium text-sidebar-accent-foreground">JD</span>
+            <span className="text-sm font-medium text-sidebar-accent-foreground">
+              {getInitials(userData?.firstName, userData?.lastName)}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-sidebar-accent-foreground truncate">
-              Jean Dupont
+              {getFullName(userData?.firstName, userData?.lastName)}
             </p>
             <p className="text-xs text-sidebar-muted truncate">
-              organisateur@email.com
+              {userData?.email || 'email@example.com'}
             </p>
           </div>
         </div>
         <Button 
           variant="ghost" 
           className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          onClick={handleLogout}
         >
           <LogOut className="h-4 w-4 mr-2" />
           Déconnexion

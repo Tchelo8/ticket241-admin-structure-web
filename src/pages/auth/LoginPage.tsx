@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { auth, sauvegarderSession } from '@/lib/Transmission';
 
 const loginSchema = z.object({
   phone: z.string()
@@ -40,19 +41,33 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    
-    // Simulate API call - replace with actual API integration
-    setTimeout(() => {
-      setIsLoading(false);
-      // For demo purposes, accept any valid input
-      toast({
-        title: 'Connexion réussie',
-        description: 'Bienvenue sur Ticket241 !',
-      });
-      navigate('/admin');
-    }, 1500);
-  };
+  setIsLoading(true);
+
+  const { succes, donnees } = await auth.connexion({
+    phone: data.phone,
+    password: data.password,
+  });
+
+  setIsLoading(false);
+
+  if (!succes || !donnees) return; 
+
+  sauvegarderSession(donnees.token, {
+    phone:       donnees.phone,
+    email:       donnees.email,
+    firstName:   donnees.firstName,
+    lastName:    donnees.lastName,
+    structureId: donnees.structureId,
+    roles:       donnees.roles,
+  });
+
+  toast({
+    title: "Connexion réussie",
+    description: `Bienvenue ${donnees.firstName} !`,
+  });
+
+  navigate('/admin');
+};
 
   return (
     <div className="min-h-screen flex">
@@ -63,15 +78,15 @@ export default function LoginPage() {
           <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent rounded-full blur-3xl" />
         </div>
-        
+
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           {/* Logo */}
-          <div className="flex items-center gap-3 mb-12">
+          {/* <div className="flex items-center gap-3 mb-12">
             <div className="w-14 h-14 bg-accent rounded-xl flex items-center justify-center">
               <Ticket className="w-8 h-8 text-white" />
             </div>
             <span className="text-3xl font-bold">Ticket241</span>
-          </div>
+          </div> */}
 
           {/* Main heading */}
           <h1 className="text-5xl font-bold leading-tight mb-6">
@@ -106,23 +121,22 @@ export default function LoginPage() {
       {/* Right side - Login form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
-              <Ticket className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-foreground">Ticket241</span>
-          </div>
-
           {/* Form header */}
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-foreground mb-2">
+          <div className="text-center mb-6 -mt-16">
+            <img
+              src="/images/logo/logo.png"
+              alt="Logo"
+              className="mx-auto mb-6 h-36 w-auto"
+            />
+
+            {/* <h2 className="text-3xl font-bold text-foreground mb-2">
               Connexion
-            </h2>
+            </h2> */}
             <p className="text-muted-foreground">
               Accédez à votre espace organisateur
             </p>
           </div>
+
 
           {/* Login form */}
           <Form {...form}>
@@ -210,7 +224,7 @@ export default function LoginPage() {
           </Form>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-sm text-muted-foreground">
+          {/* <p className="mt-8 text-center text-sm text-muted-foreground">
             Vous n'avez pas de compte ?{' '}
             <Link
               to="/register"
@@ -218,7 +232,7 @@ export default function LoginPage() {
             >
               Créer un compte
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
-import { EventFormData, CITIES } from '@/types/event';
+import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Calendar, Clock, MapPin, DoorOpen, DoorClosed } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { recuperer } from '@/lib/Transmission';
+
+
+interface City {
+  id: number;
+  uuid: string;
+  name: string;
+  country: string;
+  countryCode: string;
+  eventCount: number;
+}
 
 interface DateLocationSectionProps {
   register: UseFormRegister<EventFormData>;
@@ -25,6 +37,20 @@ export function DateLocationSection({
   city,
   onCityChange,
 }: DateLocationSectionProps) {
+  const [cities, setCities] = useState<City[]>([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      const result = await recuperer<City[]>('/api/events/cities/get/all/active');
+      if (result.succes && result.donnees) {
+        setCities(result.donnees);
+      }
+      setLoadingCities(false);
+    };
+    fetchCities();
+  }, []);
+
   return (
     <div className="bg-card rounded-xl border border-border p-6 space-y-6">
       <h3 className="text-lg font-semibold">Date et lieu</h3>
@@ -83,14 +109,14 @@ export function DateLocationSection({
             <MapPin className="h-4 w-4" />
             Ville *
           </Label>
-          <Select value={city} onValueChange={onCityChange}>
+          <Select value={city} onValueChange={onCityChange} disabled={loadingCities}>
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner une ville" />
+              <SelectValue placeholder={loadingCities ? "Chargement..." : "Sélectionner une ville"} />
             </SelectTrigger>
             <SelectContent>
-              {CITIES.map((c) => (
-                <SelectItem key={c.value} value={c.value}>
-                  {c.label}
+              {cities.map((c) => (
+                <SelectItem key={c.id} value={String(c.id)}>
+                  {c.name}
                 </SelectItem>
               ))}
             </SelectContent>

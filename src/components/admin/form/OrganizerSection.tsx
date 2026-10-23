@@ -2,22 +2,25 @@ import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Phone, CreditCard, Calendar } from 'lucide-react';
+import { User, Phone, Calendar, Users, Ticket } from 'lucide-react';
 
 interface OrganizerSectionProps {
   register: UseFormRegister<EventFormData>;
   errors: FieldErrors<EventFormData>;
+  totalSeats: number;
 }
 
-export function OrganizerSection({ register, errors }: OrganizerSectionProps) {
+export function OrganizerSection({ register, errors, totalSeats }: OrganizerSectionProps) {
   return (
     <div className="bg-card rounded-xl border border-border p-6 space-y-6">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <User className="h-5 w-5" />
-        Informations de l'organisateur
+        Informations de l'organisateur & capacité
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* organizerName → organizerName backend */}
         <div className="space-y-2">
           <Label htmlFor="organizerName" className="flex items-center gap-2">
             <User className="h-4 w-4" />
@@ -29,12 +32,11 @@ export function OrganizerSection({ register, errors }: OrganizerSectionProps) {
             {...register('organizerName')}
           />
           {errors.organizerName && (
-            <p className="text-sm text-destructive">
-              {errors.organizerName.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.organizerName.message}</p>
           )}
         </div>
 
+        {/* organizerPhone → organizerPhone backend (format +XXXXXXXXXXX) */}
         <div className="space-y-2">
           <Label htmlFor="organizerPhone" className="flex items-center gap-2">
             <Phone className="h-4 w-4" />
@@ -42,37 +44,59 @@ export function OrganizerSection({ register, errors }: OrganizerSectionProps) {
           </Label>
           <Input
             id="organizerPhone"
-            placeholder="Ex: +241 XX XX XX XX"
+            placeholder="+24107000000"
             {...register('organizerPhone')}
           />
+          <p className="text-sm text-muted-foreground">
+            Format sans espaces : +24107000000
+          </p>
           {errors.organizerPhone && (
-            <p className="text-sm text-destructive">
-              {errors.organizerPhone.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.organizerPhone.message}</p>
           )}
         </div>
 
+        {/* totalSeats → totalSeats backend, calculé à partir des catégories de billets */}
         <div className="space-y-2">
-          <Label htmlFor="lowestPrice" className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" />
-            Prix le plus bas (FCFA)
+          <Label htmlFor="totalSeats" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Capacité totale *
           </Label>
           <Input
-            id="lowestPrice"
+            id="totalSeats"
             type="number"
-            min={0}
-            step={500}
-            {...register('lowestPrice')}
+            value={totalSeats}
+            readOnly
+            className="bg-muted cursor-not-allowed"
           />
           <p className="text-sm text-muted-foreground">
-            Le prix affiché sur les aperçus de l'événement
+            Calculée automatiquement : somme des places des catégories de billets activées
+          </p>
+          {errors.totalSeats && (
+            <p className="text-sm text-destructive">{errors.totalSeats.message}</p>
+          )}
+        </div>
+
+        {/* maxTicketsPerUser → maxTicketsPerUser backend */}
+        <div className="space-y-2">
+          <Label htmlFor="maxTicketsPerUser" className="flex items-center gap-2">
+            <Ticket className="h-4 w-4" />
+            Max tickets par utilisateur
+          </Label>
+          <Input
+            id="maxTicketsPerUser"
+            type="number"
+            min={1}
+            max={100}
+            {...register('maxTicketsPerUser')}
+          />
+          <p className="text-sm text-muted-foreground">
+            Entre 1 et 100 tickets par utilisateur
           </p>
         </div>
 
+        {/* minimumAge → minAge backend */}
         <div className="space-y-2">
-          <Label htmlFor="minimumAge" className="flex items-center gap-2">
-            Âge minimum
-          </Label>
+          <Label htmlFor="minimumAge">Âge minimum</Label>
           <Input
             id="minimumAge"
             type="number"
@@ -81,14 +105,15 @@ export function OrganizerSection({ register, errors }: OrganizerSectionProps) {
             {...register('minimumAge')}
           />
           <p className="text-sm text-muted-foreground">
-            Laisser vide ou 0 si pas de restriction
+            Laisser à 0 si pas de restriction d'âge
           </p>
         </div>
 
+        {/* refundDays → refundDeadlineDays backend */}
         <div className="space-y-2">
           <Label htmlFor="refundDays" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            Jours pour remboursement
+            Délai de remboursement (jours)
           </Label>
           <Input
             id="refundDays"
@@ -100,6 +125,7 @@ export function OrganizerSection({ register, errors }: OrganizerSectionProps) {
             Nombre de jours avant l'événement pour un remboursement
           </p>
         </div>
+
       </div>
     </div>
   );
