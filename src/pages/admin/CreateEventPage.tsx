@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { EventForm } from '@/components/admin/EventForm';
 import { EventFormData } from '@/types/event';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from "@/components/icons";
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { toast } from 'sonner';

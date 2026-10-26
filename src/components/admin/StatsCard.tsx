@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from "@/components/icons";
 import { cn } from '@/lib/utils';
 
 interface StatsCardProps {
@@ -13,32 +13,22 @@ interface StatsCardProps {
   className?: string;
 }
 
+/** Indicateur : libellé en capitales, icône cyan, grand chiffre tabulaire, sous-titre gris. */
 export function StatsCard({ title, value, subtitle, icon: Icon, trend, className }: StatsCardProps) {
   return (
-    <div className={cn(
-      'stats-card bg-card rounded-xl border border-border p-6 card-hover',
-      className
-    )}>
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-3xl font-bold tracking-tight">{value}</p>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
-          )}
-          {trend && (
-            <p className={cn(
-              'text-sm font-medium',
-              trend.isPositive ? 'text-success' : 'text-destructive'
-            )}>
-              {trend.isPositive ? '+' : ''}{trend.value}% vs mois dernier
-            </p>
-          )}
-        </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
-          <Icon className="h-6 w-6 text-accent" />
-        </div>
+    <div className={cn('t-card p-[18px] animate-rise', className)}>
+      <div className="flex items-center justify-between gap-3">
+        <span className="t-label">{title}</span>
+        <Icon className="h-5 w-5 flex-none text-acc" />
       </div>
+      <div className="t-num mt-3 text-[32px] font-semibold leading-tight tracking-[-0.03em]">{value}</div>
+      {subtitle && <div className="mt-1 text-[13px] text-ink3">{subtitle}</div>}
+      {trend && (
+        <div className={cn('mt-1 text-[13px] font-medium', trend.isPositive ? 'text-acc' : 'text-acc2')}>
+          {trend.isPositive ? '+' : ''}
+          {trend.value}% vs mois dernier
+        </div>
+      )}
     </div>
   );
 }

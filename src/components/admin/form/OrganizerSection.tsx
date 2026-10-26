@@ -2,7 +2,7 @@ import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Phone, Calendar, Users, Ticket } from 'lucide-react';
+import { User, Phone, Calendar, Users, Ticket } from "@/components/icons";
 
 interface OrganizerSectionProps {
   register: UseFormRegister<EventFormData>;

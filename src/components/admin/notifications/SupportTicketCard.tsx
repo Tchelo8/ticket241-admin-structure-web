@@ -1,4 +1,4 @@
- import { MessageSquare, Clock, ChevronRight } from 'lucide-react';
+ import { MessageSquare, Clock, ChevronRight } from "@/components/icons";
  import { Card, CardContent } from '@/components/ui/card';
  import { Badge } from '@/components/ui/badge';
  import { Button } from '@/components/ui/button';

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { CheckCircle, XCircle, AlertTriangle, AlertCircle, Clock, Ticket } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, AlertCircle, Clock, Ticket } from "@/components/icons";
 
 interface EventControlCardProps {
   stats: EventControlStats;
@@ -30,7 +30,7 @@ export function EventControlCard({ stats }: EventControlCardProps) {
           <Badge 
             variant="outline" 
             className={isLive 
-              ? 'bg-green-500/10 text-green-600 border-green-500/20 animate-pulse' 
+              ? 'bg-acc/10 text-acc border-acc/20 animate-pulse' 
               : 'bg-muted text-muted-foreground'
             }
           >
@@ -59,18 +59,18 @@ export function EventControlCard({ stats }: EventControlCardProps) {
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-green-500/10">
-            <CheckCircle className="h-4 w-4 text-green-600" />
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-acc/10">
+            <CheckCircle className="h-4 w-4 text-acc" />
             <div>
-              <p className="text-lg font-semibold text-green-600">{stats.scannedTickets}</p>
+              <p className="text-lg font-semibold text-acc">{stats.scannedTickets}</p>
               <p className="text-xs text-muted-foreground">Scannés</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-orange-500/10">
-            <XCircle className="h-4 w-4 text-orange-600" />
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-acc2/10">
+            <XCircle className="h-4 w-4 text-acc2" />
             <div>
-              <p className="text-lg font-semibold text-orange-600">{stats.rejectedScans}</p>
+              <p className="text-lg font-semibold text-acc2">{stats.rejectedScans}</p>
               <p className="text-xs text-muted-foreground">Refusés</p>
             </div>
           </div>
@@ -83,10 +83,10 @@ export function EventControlCard({ stats }: EventControlCardProps) {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/10">
-            <AlertCircle className="h-4 w-4 text-yellow-600" />
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-acc2/10">
+            <AlertCircle className="h-4 w-4 text-acc2" />
             <div>
-              <p className="text-lg font-semibold text-yellow-600">{stats.anomalies}</p>
+              <p className="text-lg font-semibold text-acc2">{stats.anomalies}</p>
               <p className="text-xs text-muted-foreground">Anomalies</p>
             </div>
           </div>

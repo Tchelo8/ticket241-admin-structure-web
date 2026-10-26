@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { MoreVertical, Mail, Phone, Calendar, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Mail, Phone, Calendar, Pencil, Trash2 } from "@/components/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +36,7 @@ const ROLE_CONFIG: Record<string, { label: string; description: string; color: s
   ROLE_ADMIN: {
     label: 'Administrateur',
     description: 'Accès administrateur global',
-    color: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+    color: 'bg-acc2/10 text-acc2 border-acc2/20',
   },
   ROLE_USER: {
     label: 'Utilisateur',

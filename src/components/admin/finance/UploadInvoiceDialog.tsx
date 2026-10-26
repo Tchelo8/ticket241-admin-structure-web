@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, FileText, X } from 'lucide-react';
+import { Upload, FileText, X } from "@/components/icons";
 
 interface UploadInvoiceDialogProps {
   open: boolean;

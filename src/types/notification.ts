@@ -41,18 +41,18 @@
  }
  
  export const notificationTypeConfig: Record<NotificationType, { label: string; color: string; bgColor: string }> = {
-   event: { label: 'Événement', color: 'text-blue-700', bgColor: 'bg-blue-100' },
-   sales: { label: 'Ventes', color: 'text-green-700', bgColor: 'bg-green-100' },
-   payment: { label: 'Paiement', color: 'text-amber-700', bgColor: 'bg-amber-100' },
-   system: { label: 'Système', color: 'text-red-700', bgColor: 'bg-red-100' },
-   info: { label: 'Information', color: 'text-slate-700', bgColor: 'bg-slate-100' },
+   event: { label: 'Événement', color: 'text-acc', bgColor: 'bg-acc' },
+   sales: { label: 'Ventes', color: 'text-acc', bgColor: 'bg-acc' },
+   payment: { label: 'Paiement', color: 'text-acc2', bgColor: 'bg-acc2' },
+   system: { label: 'Système', color: 'text-acc2', bgColor: 'bg-acc2' },
+   info: { label: 'Information', color: 'text-ink2', bgColor: 'bg-ink2' },
  };
  
  export const supportStatusConfig: Record<SupportTicketStatus, { label: string; color: string; bgColor: string }> = {
-   open: { label: 'Ouvert', color: 'text-blue-700', bgColor: 'bg-blue-100' },
-   in_progress: { label: 'En cours', color: 'text-amber-700', bgColor: 'bg-amber-100' },
-   resolved: { label: 'Résolu', color: 'text-green-700', bgColor: 'bg-green-100' },
-   closed: { label: 'Fermé', color: 'text-slate-700', bgColor: 'bg-slate-100' },
+   open: { label: 'Ouvert', color: 'text-acc', bgColor: 'bg-acc' },
+   in_progress: { label: 'En cours', color: 'text-acc2', bgColor: 'bg-acc2' },
+   resolved: { label: 'Résolu', color: 'text-acc', bgColor: 'bg-acc' },
+   closed: { label: 'Fermé', color: 'text-ink2', bgColor: 'bg-ink2' },
  };
  
  export const supportCategoryConfig: Record<SupportTicketCategory, { label: string }> = {

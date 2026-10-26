@@ -50,16 +50,16 @@
  }
  
  export const transactionTypeConfig: Record<TransactionType, { label: string; color: string; bgColor: string }> = {
-   sale: { label: 'Vente', color: 'text-green-600', bgColor: 'bg-green-500/10' },
-   refund: { label: 'Remboursement', color: 'text-red-600', bgColor: 'bg-red-500/10' },
-   payout: { label: 'Versement', color: 'text-blue-600', bgColor: 'bg-blue-500/10' },
-   commission: { label: 'Commission', color: 'text-amber-600', bgColor: 'bg-amber-500/10' },
+   sale: { label: 'Vente', color: 'text-acc', bgColor: 'bg-acc/10' },
+   refund: { label: 'Remboursement', color: 'text-acc2', bgColor: 'bg-acc2/10' },
+   payout: { label: 'Versement', color: 'text-acc', bgColor: 'bg-acc/10' },
+   commission: { label: 'Commission', color: 'text-acc2', bgColor: 'bg-acc2/10' },
  };
  
  export const transactionStatusConfig: Record<TransactionStatus, { label: string; color: string; bgColor: string }> = {
-   completed: { label: 'Complété', color: 'text-green-600', bgColor: 'bg-green-500/10' },
-   pending: { label: 'En attente', color: 'text-amber-600', bgColor: 'bg-amber-500/10' },
-   failed: { label: 'Échoué', color: 'text-red-600', bgColor: 'bg-red-500/10' },
+   completed: { label: 'Complété', color: 'text-acc', bgColor: 'bg-acc/10' },
+   pending: { label: 'En attente', color: 'text-acc2', bgColor: 'bg-acc2/10' },
+   failed: { label: 'Échoué', color: 'text-acc2', bgColor: 'bg-acc2/10' },
  };
  
  export const paymentMethodConfig: Record<PaymentMethod, { label: string; icon: string }> = {

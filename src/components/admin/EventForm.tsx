@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { EventFormData, TicketCategory } from '@/types/event';
 import { Button } from '@/components/ui/button';
-import { Save, Send } from 'lucide-react';
+import { Save, Send } from "@/components/icons";
 import { useState, useEffect } from 'react';
 
 import { GeneralInfoSection } from './form/GeneralInfoSection';

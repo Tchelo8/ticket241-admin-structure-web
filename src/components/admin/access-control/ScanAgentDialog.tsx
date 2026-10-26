@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScanAgent } from '@/types/accessControl';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "@/components/icons";
 
 interface ScanAgentDialogProps {
   agent: ScanAgent | null;

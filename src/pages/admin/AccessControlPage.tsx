@@ -31,7 +31,7 @@ import {
   AlertTriangle,
   CheckCircle,
   AlertCircle,
-} from 'lucide-react';
+} from "@/components/icons";
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -330,8 +330,8 @@ export default function AccessControlPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+              <div className="h-10 w-10 rounded-lg bg-acc/10 flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-acc" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{totalScans}</p>
@@ -530,10 +530,10 @@ export default function AccessControlPage() {
             ONGLET CONTRÔLE LIVE — mock (inchangé)
         ════════════════════════════════════════════════════ */}
         <TabsContent value="control" className="space-y-4">
-          <Card className="bg-green-500/5 border-green-500/20">
+          <Card className="bg-acc/5 border-acc/20">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <Activity className="h-5 w-5 text-green-600 mt-0.5 animate-pulse" />
+                <Activity className="h-5 w-5 text-acc mt-0.5 animate-pulse" />
                 <div>
                   <h4 className="font-medium text-foreground">Contrôle en temps réel</h4>
                   <p className="text-sm text-muted-foreground">

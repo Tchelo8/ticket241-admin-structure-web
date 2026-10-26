@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar, Clock, MapPin, DoorOpen, DoorClosed } from 'lucide-react';
+import { Calendar, Clock, MapPin, DoorOpen, DoorClosed } from "@/components/icons";
 import { useEffect, useState } from 'react';
 import { recuperer } from '@/lib/Transmission';
 

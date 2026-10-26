@@ -1,5 +1,5 @@
  import { useState } from 'react';
- import { Bell, MessageSquare, Plus, Filter, Search, CheckCheck } from 'lucide-react';
+ import { Bell, MessageSquare, Plus, Filter, Search, CheckCheck } from "@/components/icons";
  import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
  import { Button } from '@/components/ui/button';
  import { Input } from '@/components/ui/input';

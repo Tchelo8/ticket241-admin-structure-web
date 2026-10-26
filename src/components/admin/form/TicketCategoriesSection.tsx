@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Trash2, Ticket } from 'lucide-react';
+import { Plus, Trash2, Ticket } from "@/components/icons";
 import { useState } from 'react';
 
 interface TicketCategoriesSectionProps {

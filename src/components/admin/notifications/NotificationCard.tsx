@@ -1,4 +1,4 @@
- import { Bell, CalendarDays, CreditCard, Info, AlertTriangle, ChevronRight } from 'lucide-react';
+ import { Bell, CalendarDays, CreditCard, Info, AlertTriangle, ChevronRight } from "@/components/icons";
  import { Card, CardContent } from '@/components/ui/card';
  import { Badge } from '@/components/ui/badge';
  import { Button } from '@/components/ui/button';

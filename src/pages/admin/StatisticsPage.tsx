@@ -24,7 +24,7 @@ import {
   ArrowDownRight,
   Percent,
   AlertCircle,
-} from 'lucide-react';
+} from "@/components/icons";
 import {
   AreaChart,
   Area,
@@ -370,7 +370,7 @@ export default function StatisticsPage() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <DollarSign className="h-5 w-5 text-primary" />
-                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  <TrendingUp className="h-4 w-4 text-acc" />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">CA Brut</p>
                 <p className="text-lg sm:text-2xl font-bold">{formatMonnaie(kpis.caBrut)}</p>
@@ -383,10 +383,10 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <DollarSign className="h-5 w-5 text-acc" />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">CA Net</p>
-                <p className="text-lg sm:text-2xl font-bold text-green-600">{formatMonnaie(kpis.caNet)}</p>
+                <p className="text-lg sm:text-2xl font-bold text-acc">{formatMonnaie(kpis.caNet)}</p>
               </div>
             </CardContent>
           </Card>
@@ -396,11 +396,11 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <Percent className="h-5 w-5 text-amber-500" />
+                  <Percent className="h-5 w-5 text-acc2" />
                   <Badge variant="outline" className="text-xs">5%</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Commission</p>
-                <p className="text-lg sm:text-2xl font-bold text-amber-600">{formatMonnaie(kpis.commission)}</p>
+                <p className="text-lg sm:text-2xl font-bold text-acc2">{formatMonnaie(kpis.commission)}</p>
               </div>
             </CardContent>
           </Card>
@@ -466,8 +466,8 @@ export default function StatisticsPage() {
                       if (diff === 0) return null;
                       const pct = Math.round((donneesComparaison.kpiCompare.totalBillets / diff - 1) * 100);
                       return pct >= 0
-                        ? <span className="text-xs text-green-500 flex items-center justify-center gap-0.5"><ArrowUpRight className="h-3 w-3" />{pct}%</span>
-                        : <span className="text-xs text-red-500 flex items-center justify-center gap-0.5"><ArrowDownRight className="h-3 w-3" />{Math.abs(pct)}%</span>;
+                        ? <span className="text-xs text-acc flex items-center justify-center gap-0.5"><ArrowUpRight className="h-3 w-3" />{pct}%</span>
+                        : <span className="text-xs text-acc2 flex items-center justify-center gap-0.5"><ArrowDownRight className="h-3 w-3" />{Math.abs(pct)}%</span>;
                     })()}
                   </div>
                   {/* CA */}
@@ -479,8 +479,8 @@ export default function StatisticsPage() {
                       if (ref === 0) return null;
                       const pct = Math.round((donneesComparaison.kpiCompare.caBrut / ref - 1) * 100);
                       return pct >= 0
-                        ? <span className="text-xs text-green-500 flex items-center justify-center gap-0.5"><ArrowUpRight className="h-3 w-3" />{pct}%</span>
-                        : <span className="text-xs text-red-500 flex items-center justify-center gap-0.5"><ArrowDownRight className="h-3 w-3" />{Math.abs(pct)}%</span>;
+                        ? <span className="text-xs text-acc flex items-center justify-center gap-0.5"><ArrowUpRight className="h-3 w-3" />{pct}%</span>
+                        : <span className="text-xs text-acc2 flex items-center justify-center gap-0.5"><ArrowDownRight className="h-3 w-3" />{Math.abs(pct)}%</span>;
                     })()}
                   </div>
                   {/* Remplissage */}

@@ -49,12 +49,12 @@ export type ControlEventType = 'scan_success' | 'scan_rejected' | 'fraud_attempt
 export const CONTROL_EVENT_TYPES: Record<ControlEventType, { label: string; color: string; icon: string }> = {
   scan_success: {
     label: 'Scan réussi',
-    color: 'bg-green-500/10 text-green-600 border-green-500/20',
+    color: 'bg-acc/10 text-acc border-acc/20',
     icon: 'check',
   },
   scan_rejected: {
     label: 'Scan refusé',
-    color: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+    color: 'bg-acc2/10 text-acc2 border-acc2/20',
     icon: 'x',
   },
   fraud_attempt: {
@@ -64,7 +64,7 @@ export const CONTROL_EVENT_TYPES: Record<ControlEventType, { label: string; colo
   },
   anomaly: {
     label: 'Anomalie',
-    color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+    color: 'bg-acc2/10 text-acc2 border-acc2/20',
     icon: 'alert-circle',
   },
 };

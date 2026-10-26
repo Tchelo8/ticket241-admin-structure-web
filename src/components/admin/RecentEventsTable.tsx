@@ -1,103 +1,75 @@
+import { Link, useNavigate } from 'react-router-dom';
 import { EventStatusBadge } from './EventStatusBadge';
-import { Link } from 'react-router-dom';
-import { Eye, Calendar, MapPin } from 'lucide-react';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-
-interface EventSummary {
-  id: number;
-  uuid: string | null;
-  name: string;
-  slug: string;
-  startDate: string;
-  venueName: string;
-  cityName: string;
-  coverImageUrl: string | null;
-  soldSeats: number;
-  availableSeats: number;
-  viewCount: number;
-}
+import { Image } from "@/components/icons";
+import { capacite, statut, vendus, type EvenementStructure } from '@/lib/backoffice';
+import { dateCourte, nombre } from '@/lib/format';
 
 interface RecentEventsTableProps {
-  events: EventSummary[];
+  events: EvenementStructure[];
 }
 
+const th = 'px-3 py-2.5 text-left text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink3';
+
 export function RecentEventsTable({ events }: RecentEventsTableProps) {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden">
-      <div className="px-6 py-4 border-b border-border">
-        <h3 className="text-lg font-semibold">Événements récents</h3>
+    <section className="t-card overflow-hidden">
+      <div className="flex items-baseline justify-between gap-3 px-5 py-[18px]">
+        <h2 className="t-section-title">Événements récents</h2>
+        <Link to="/admin/events" className="text-sm font-medium text-acc no-underline hover:underline">
+          Voir tous les événements
+        </Link>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Événement
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Date
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Statut
-              </th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Vues
-              </th>
-              <th className="text-right px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Tickets
-              </th>
+        <table className="w-full min-w-[860px] border-collapse">
+          <thead>
+            <tr className="bg-surf">
+              <th className={`${th} !px-5`}>Événement</th>
+              <th className={th}>Date</th>
+              <th className={th}>Statut</th>
+              <th className={`${th} text-right`}>Vues</th>
+              <th className={`${th} !px-5 text-right`}>Billets</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody>
             {events.map((event) => (
-              <tr key={event.id} className="table-row-hover">
-                <td className="px-6 py-4">
-                  <Link
-                    to={`/admin/events/${event.slug}`}
-                    className="flex items-center gap-3 group"
-                  >
+              <tr
+                key={event.id}
+                onClick={() => navigate(`/admin/events/${event.slug}`)}
+                className="table-row-hover cursor-pointer border-t border-line"
+              >
+                <td className="min-w-[280px] px-5 py-3">
+                  <div className="flex items-center gap-3">
                     {event.coverImageUrl ? (
-                      <img
-                        src={event.coverImageUrl}
-                        alt={event.name}
-                        className="h-12 w-16 rounded-lg object-cover"
-                      />
+                      <img src={event.coverImageUrl} alt="" className="t-img h-10 w-14 flex-none rounded-[3px] object-cover" />
                     ) : (
-                      <div className="h-12 w-16 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                        N/A
+                      <div className="flex h-10 w-14 flex-none items-center justify-center rounded-[3px] bg-surf text-ink3">
+                        <Image className="h-4 w-4" />
                       </div>
                     )}
-                    <div>
-                      <p className="font-medium group-hover:text-accent transition-colors">
+                    <div className="min-w-0">
+                      <Link
+                        to={`/admin/events/${event.slug}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="block max-w-[260px] truncate text-[15px] font-semibold text-ink no-underline"
+                      >
                         {event.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
+                      </Link>
+                      <div className="whitespace-nowrap text-[12.5px] text-ink3">
                         {event.venueName} · {event.cityName}
-                      </p>
+                      </div>
                     </div>
-                  </Link>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-1 text-sm">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    {format(new Date(event.startDate), 'dd MMM yyyy', { locale: fr })}
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  {/* S'il est renvoyé par l'API publique c'est qu'il est publié */}
-                  <EventStatusBadge status="published" />
+                <td className="whitespace-nowrap px-3 py-3 text-sm">{dateCourte(event.startDate)}</td>
+                <td className="px-3 py-3">
+                  <EventStatusBadge status={statut(event)} />
                 </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-1 text-sm">
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                    {event.viewCount.toLocaleString('fr-FR')}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <span className="font-medium">{event.soldSeats.toLocaleString('fr-FR')}</span>
-                  <span className="text-muted-foreground"> / {event.availableSeats.toLocaleString('fr-FR')}</span>
+                <td className="t-num px-3 py-3 text-right text-sm">{event.viewCount ? nombre(event.viewCount) : '—'}</td>
+                <td className="t-num px-5 py-3 text-right text-sm">
+                  <span className="font-semibold">{nombre(vendus(event))}</span>
+                  <span className="text-ink3"> / {nombre(capacite(event))}</span>
                 </td>
               </tr>
             ))}
@@ -105,19 +77,9 @@ export function RecentEventsTable({ events }: RecentEventsTableProps) {
         </table>
 
         {events.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            Aucun événement trouvé.
-          </div>
+          <div className="border-t border-line py-12 text-center text-ink3">Aucun événement pour le moment.</div>
         )}
       </div>
-      <div className="px-6 py-4 border-t border-border">
-        <Link
-          to="/admin/events"
-          className="text-sm font-medium text-accent hover:underline"
-        >
-          Voir tous les événements →
-        </Link>
-      </div>
-    </div>
+    </section>
   );
 }

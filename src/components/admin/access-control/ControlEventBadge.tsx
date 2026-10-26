@@ -1,6 +1,6 @@
 import { ControlEventType, CONTROL_EVENT_TYPES } from '@/types/accessControl';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, AlertTriangle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, AlertCircle } from "@/components/icons";
 
 interface ControlEventBadgeProps {
   type: ControlEventType;

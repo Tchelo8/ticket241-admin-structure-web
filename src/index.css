@@ -1,168 +1,311 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..800;1,8..60,300..700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Ticket241 Design System - Modern SaaS Dashboard */
-
+/*
+ * Ticket241 — Espace organisateur, design v2 (voir design/admin-v2/README.md)
+ * Trois thèmes sur <html data-theme="…"> : Papier (défaut), Encre (sombre), Noir & Blanc.
+ * Les couleurs utilisées avec une opacité Tailwind (bg-acc/10…) sont déclarées en canaux RGB
+ * (--x-rgb) ; les autres jetons gardent la valeur exacte du README.
+ */
 @layer base {
+  :root,
+  [data-theme="paper"] {
+    --bg-rgb: 243 242 242;
+    --card-rgb: 253 253 252;
+    --surf-rgb: 234 233 233;
+    --side-rgb: 234 233 233;
+    --ink-rgb: 32 30 29;
+    --ink2-rgb: 96 93 93;
+    --ink3-rgb: 155 151 151;
+    --acc-rgb: 0 136 176;
+    --acc2-rgb: 214 0 108;
+    --on-acc-rgb: 255 255 255;
+    --accs: #e4f4fb;
+    --acc2s: #ffeef4;
+    --line: rgba(32, 30, 29, 0.13);
+    --line2: rgba(32, 30, 29, 0.26);
+    --glass: rgba(243, 242, 242, 0.86);
+    --imgf: none;
+    --sh: 0 1px 2px rgba(45, 43, 43, 0.1);
+    --shm: 0 4px 14px rgba(45, 43, 43, 0.11);
+    --shl: 0 14px 38px rgba(45, 43, 43, 0.16);
+    --logo-filter: none;
+    color-scheme: light;
+  }
+
+  [data-theme="ink"] {
+    --bg-rgb: 27 26 25;
+    --card-rgb: 38 36 35;
+    --surf-rgb: 48 46 44;
+    --side-rgb: 21 20 19;
+    --ink-rgb: 245 243 241;
+    --ink2-rgb: 186 182 182;
+    --ink3-rgb: 138 134 133;
+    --acc-rgb: 98 197 238;
+    --acc2-rgb: 255 144 177;
+    --on-acc-rgb: 17 32 31;
+    --accs: rgba(98, 197, 238, 0.15);
+    --acc2s: rgba(255, 144, 177, 0.15);
+    --line: rgba(243, 242, 242, 0.14);
+    --line2: rgba(243, 242, 242, 0.28);
+    --glass: rgba(27, 26, 25, 0.86);
+    --imgf: brightness(0.92) saturate(0.95);
+    --sh: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shm: 0 6px 18px rgba(0, 0, 0, 0.5);
+    --shl: 0 16px 40px rgba(0, 0, 0, 0.6);
+    /* Logo sur fond sombre : passé en blanc (logo.png est transparent) */
+    --logo-filter: brightness(0) invert(1);
+    color-scheme: dark;
+  }
+
+  [data-theme="mono"] {
+    --bg-rgb: 244 243 242;
+    --card-rgb: 255 255 255;
+    --surf-rgb: 233 231 229;
+    --side-rgb: 233 231 229;
+    --ink-rgb: 20 19 18;
+    --ink2-rgb: 92 89 87;
+    --ink3-rgb: 150 145 142;
+    --acc-rgb: 20 19 18;
+    --acc2-rgb: 74 70 68;
+    --on-acc-rgb: 255 255 255;
+    --accs: #e6e3e0;
+    --acc2s: #e6e3e0;
+    --line: rgba(20, 19, 18, 0.18);
+    --line2: rgba(20, 19, 18, 0.4);
+    --glass: rgba(244, 243, 242, 0.88);
+    --imgf: grayscale(1) contrast(1.12);
+    --sh: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shm: 0 4px 14px rgba(0, 0, 0, 0.12);
+    --shl: 0 14px 38px rgba(0, 0, 0, 0.16);
+    --logo-filter: none;
+    color-scheme: light;
+  }
+
   :root {
-    /* Core colors - Clean white background with dark text */
-    --background: 0 0% 99%;
-    --foreground: 222 47% 11%;
-
-    /* Cards - Slightly elevated from background */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    /* Popover - Same as card */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    /* Primary - Deep slate blue for professionalism */
-    --primary: 222 47% 11%;
-    --primary-foreground: 210 40% 98%;
-
-    /* Secondary - Light gray for secondary actions */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
-
-    /* Muted - Subtle backgrounds and text */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-
-    /* Accent - Dodger Blue for CTAs and highlights */
-    --accent: 210 100% 56%;
-    --accent-foreground: 0 0% 100%;
-
-    /* Success - Green for positive states */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-
-    /* Warning - Amber for warnings */
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-
-    /* Destructive - Red for errors and delete */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    /* Borders and inputs */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 210 100% 56%;
-
-    --radius: 0.625rem;
-
-    /* Sidebar - Dark professional look */
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 210 100% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 16%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 18%;
-    --sidebar-ring: 210 100% 56%;
-    --sidebar-muted: 220 9% 46%;
-
-    /* Chart colors for analytics */
-    --chart-1: 210 100% 56%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 222 47% 40%;
-    --chart-4: 38 92% 50%;
-    --chart-5: 0 84% 60%;
+    /* Raccourcis du README (styles en ligne, SVG…) */
+    --bg: rgb(var(--bg-rgb));
+    --card: rgb(var(--card-rgb));
+    --surf: rgb(var(--surf-rgb));
+    --side: rgb(var(--side-rgb));
+    --ink: rgb(var(--ink-rgb));
+    --ink2: rgb(var(--ink2-rgb));
+    --ink3: rgb(var(--ink3-rgb));
+    --acc: rgb(var(--acc-rgb));
+    --acc2: rgb(var(--acc2-rgb));
+    --on-acc: rgb(var(--on-acc-rgb));
+    --radius: 6px;
   }
 
-  .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 25 95% 53%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222 47% 14%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 14%;
-    --muted-foreground: 220 9% 60%;
-    --accent: 210 100% 56%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
-    --ring: 210 100% 56%;
-    --sidebar-background: 222 47% 6%;
-    --sidebar-foreground: 210 40% 80%;
-    --sidebar-primary: 210 100% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 12%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 14%;
-    --sidebar-ring: 210 100% 56%;
-  }
-}
-
-@layer base {
   * {
-    @apply border-border;
+    border-color: var(--line);
+  }
+
+  html,
+  body {
+    background: var(--bg);
+    color: var(--ink);
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Source Serif 4", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s, color 0.3s;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  a {
+    color: var(--acc);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--accs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer components {
-  /* Stats card gradient overlay */
-  .stats-card {
-    @apply relative overflow-hidden;
+  /* Libellé en capitales (en-têtes de tableau, petits titres) */
+  .t-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink3);
   }
 
-  .stats-card::before {
-    content: '';
-    @apply absolute inset-0 opacity-5;
-    background: linear-gradient(135deg, hsl(var(--accent)) 0%, transparent 60%);
+  /* Titre de page */
+  .t-page-title {
+    margin: 0;
+    font-size: clamp(30px, 3.6vw, 42px);
+    line-height: 1.04;
+    font-weight: 600;
+    letter-spacing: -0.03em;
   }
 
-  /* Sidebar active state */
-  .sidebar-item-active {
-    @apply bg-sidebar-accent text-sidebar-accent-foreground;
-    box-shadow: inset 3px 0 0 hsl(var(--sidebar-primary));
+  /* Titre de section */
+  .t-section-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
-  /* Table row hover */
+  /* Carte du design : fond carte, filet, ombre légère, rayon 6px */
+  .t-card {
+    border-radius: 6px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--sh);
+  }
+
+  /* Chiffres alignés */
+  .t-num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Images d'événement : atténuées en thème Encre, en gris en Noir & Blanc */
+  .t-img {
+    filter: var(--imgf);
+  }
+
+  .t-logo {
+    filter: var(--logo-filter);
+  }
+
+  /* Dateline : filet 3px, ligne en capitales, filet 1px */
+  .t-dateline-top {
+    height: 3px;
+    background: var(--ink);
+  }
+  .t-dateline-bottom {
+    height: 1px;
+    background: var(--ink);
+  }
+
+  /* Barre de remplissage */
+  .t-meter {
+    height: 6px;
+    border-radius: 6px;
+    background: var(--surf);
+    overflow: hidden;
+  }
+  .t-meter > span {
+    display: block;
+    height: 100%;
+    border-radius: 6px;
+    background: var(--acc);
+  }
+
+  /* Ligne de tableau cliquable */
   .table-row-hover {
-    @apply transition-colors duration-150 hover:bg-muted/50;
+    transition: background-color 0.15s;
+  }
+  .table-row-hover:hover {
+    background: var(--bg);
   }
 
-  /* Status badges */
+  /* Anciennes classes conservées pour les écrans existants */
+  .stats-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .sidebar-item-active {
+    background: var(--card);
+    font-weight: 600;
+  }
   .badge-published {
-    @apply bg-success/10 text-success border-success/20;
+    background: var(--accs);
+    color: var(--acc);
   }
-
   .badge-draft {
-    @apply bg-warning/10 text-warning border-warning/20;
+    background: var(--surf);
+    color: var(--ink2);
   }
-
   .badge-cancelled {
-    @apply bg-destructive/10 text-destructive border-destructive/20;
+    background: var(--acc2s);
+    color: var(--acc2);
   }
-
-  /* Smooth page transitions */
   .page-transition {
-    @apply animate-in fade-in-0 slide-in-from-bottom-2 duration-300;
+    animation: t-fade 0.28s both;
   }
-
-  /* Card hover effect */
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card-hover:hover {
+    box-shadow: var(--shm);
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes t-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes t-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes t-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes t-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
   }
 }

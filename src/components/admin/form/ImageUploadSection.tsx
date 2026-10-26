@@ -3,7 +3,7 @@ import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Image, Upload, X } from 'lucide-react';
+import { Image, Upload, X } from "@/components/icons";
 import { useRef, useState } from 'react';
 
 interface ImageUploadSectionProps {

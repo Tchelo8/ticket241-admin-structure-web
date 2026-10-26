@@ -39,7 +39,7 @@ import {
   Star,
   Upload,
   Pencil
-} from 'lucide-react';
+} from "@/components/icons";
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -107,11 +107,11 @@ export default function FinancesPage() {
   const getPayoutStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Versé</Badge>;
+        return <Badge className="bg-acc/10 text-acc border-acc/20"><CheckCircle className="h-3 w-3 mr-1" />Versé</Badge>;
       case 'processing':
-        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20"><Loader2 className="h-3 w-3 mr-1 animate-spin" />En cours</Badge>;
+        return <Badge className="bg-acc/10 text-acc border-acc/20"><Loader2 className="h-3 w-3 mr-1 animate-spin" />En cours</Badge>;
       case 'pending':
-        return <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20"><Clock className="h-3 w-3 mr-1" />En attente</Badge>;
+        return <Badge className="bg-acc2/10 text-acc2 border-acc2/20"><Clock className="h-3 w-3 mr-1" />En attente</Badge>;
       default:
         return null;
     }
@@ -222,8 +222,8 @@ export default function FinancesPage() {
                 <p className="text-sm text-muted-foreground">En attente de versement</p>
                 <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.pendingPayouts)}</p>
               </div>
-              <div className="h-12 w-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-amber-600" />
+              <div className="h-12 w-12 rounded-full bg-acc2/10 flex items-center justify-center">
+                <Clock className="h-6 w-6 text-acc2" />
               </div>
             </div>
           </CardContent>
@@ -236,8 +236,8 @@ export default function FinancesPage() {
                 <p className="text-sm text-muted-foreground">Total des gains</p>
                 <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.totalEarnings)}</p>
               </div>
-              <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-green-600" />
+              <div className="h-12 w-12 rounded-full bg-acc/10 flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-acc" />
               </div>
             </div>
           </CardContent>
@@ -304,7 +304,7 @@ export default function FinancesPage() {
                         <TableCell className="text-right text-muted-foreground">
                           -{formatCurrency(revenue.platformCommission)}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-green-600">
+                        <TableCell className="text-right font-medium text-acc">
                           {formatCurrency(revenue.netRevenue)}
                         </TableCell>
                         <TableCell className="text-center">
@@ -345,7 +345,7 @@ export default function FinancesPage() {
                         </div>
                         <div>
                           <p className="text-muted-foreground">Revenus nets</p>
-                          <p className="font-bold text-green-600">{formatCurrency(revenue.netRevenue)}</p>
+                          <p className="font-bold text-acc">{formatCurrency(revenue.netRevenue)}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -451,7 +451,7 @@ export default function FinancesPage() {
                           <TableCell className="text-right">
                             <span className={cn(
                               'font-medium flex items-center justify-end gap-1',
-                              isPositive ? 'text-green-600' : 'text-red-600'
+                              isPositive ? 'text-acc' : 'text-acc2'
                             )}>
                               {isPositive ? (
                                 <ArrowUpRight className="h-3 w-3" />
@@ -503,7 +503,7 @@ export default function FinancesPage() {
                           </div>
                           <span className={cn(
                             'font-bold flex items-center gap-1 shrink-0',
-                            isPositive ? 'text-green-600' : 'text-red-600'
+                            isPositive ? 'text-acc' : 'text-acc2'
                           )}>
                             {isPositive ? '+' : ''}{formatCurrency(transaction.amount)}
                           </span>

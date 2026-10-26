@@ -1,9 +1,13 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="paper">
   <head>
+    <!-- Thème enregistré appliqué avant le premier affichage (voir src/lib/theme.ts) -->
+    <script>
+      try { var t = localStorage.getItem("t241.admin.theme"); if (t === "ink" || t === "mono") document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="images/logo/logoblanc.png" />
+    <link rel="icon" type="image/png" href="/brand/logo.png" />
     <title>Ticket241 - Espace Organisateur</title>
     <meta name="description" content="Gérez vos événements et billets avec Ticket241, la plateforme de ticketing événementiel au Gabon." />
     <meta name="author" content="Ticket241" />

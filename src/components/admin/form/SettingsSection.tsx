@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Globe, Star, Megaphone, Eye, Link, FileText } from 'lucide-react';
+import { Settings, Globe, Star, Megaphone, Eye, Link, FileText } from "@/components/icons";
 
 interface SettingsSectionProps {
   register: UseFormRegister<EventFormData>;

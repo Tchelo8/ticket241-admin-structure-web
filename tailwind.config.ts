@@ -1,7 +1,11 @@
 import type { Config } from "tailwindcss";
 
+/** Couleur d'un jeton déclaré en canaux RGB (--x-rgb) : accepte l'opacité Tailwind (bg-acc/10). */
+const rgb = (name: string) => `rgb(var(--${name}-rgb) / <alpha-value>)`;
+
 export default {
-  darkMode: ["class"],
+  // Les thèmes passent par <html data-theme="paper|ink|mono"> (voir src/lib/theme.ts)
+  darkMode: ["class", '[data-theme="ink"]'],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
@@ -13,74 +17,108 @@ export default {
       },
     },
     extend: {
+      screens: {
+        // Barre latérale en tiroir sous 980px (README)
+        nav: "980px",
+      },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        // Source Serif 4 partout, aucune sans-serif
+        sans: ['"Source Serif 4"', "Georgia", "serif"],
+        serif: ['"Source Serif 4"', "Georgia", "serif"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Jetons du design v2
+        bg: rgb("bg"),
+        surf: rgb("surf"),
+        side: rgb("side"),
+        ink: rgb("ink"),
+        ink2: rgb("ink2"),
+        ink3: rgb("ink3"),
+        acc: rgb("acc"),
+        acc2: rgb("acc2"),
+        "on-acc": rgb("on-acc"),
+        accs: "var(--accs)",
+        acc2s: "var(--acc2s)",
+        line: "var(--line)",
+        line2: "var(--line2)",
+
+        // Noms shadcn/ui conservés, rebranchés sur les jetons
+        border: "var(--line)",
+        input: "var(--line2)",
+        ring: rgb("acc"),
+        background: rgb("bg"),
+        foreground: rgb("ink"),
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: rgb("acc"),
+          foreground: rgb("on-acc"),
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: rgb("surf"),
+          foreground: rgb("ink"),
         },
+        // Pas de rouge Tailwind : la destruction utilise le magenta
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: rgb("acc2"),
+          foreground: "#ffffff",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: rgb("surf"),
+          foreground: rgb("ink2"),
         },
+        // « accent » était déjà la couleur d'action de l'application : il devient le cyan
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: rgb("acc"),
+          foreground: rgb("on-acc"),
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: rgb("card"),
+          foreground: rgb("ink"),
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: rgb("card"),
+          foreground: rgb("ink"),
         },
+        // Ni vert ni orange (README) : succès en cyan, avertissement en magenta
         success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
+          DEFAULT: rgb("acc"),
+          foreground: rgb("on-acc"),
         },
         warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
+          DEFAULT: rgb("acc2"),
+          foreground: "#ffffff",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-          muted: "hsl(var(--sidebar-muted))",
+          DEFAULT: rgb("side"),
+          foreground: rgb("ink2"),
+          primary: rgb("acc"),
+          "primary-foreground": rgb("on-acc"),
+          accent: rgb("card"),
+          "accent-foreground": rgb("ink"),
+          border: "var(--line)",
+          ring: rgb("acc"),
+          muted: rgb("ink3"),
         },
         chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
+          "1": rgb("acc"),
+          "2": rgb("acc2"),
+          "3": rgb("ink2"),
+          "4": rgb("ink3"),
+          "5": rgb("surf"),
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        // 4px boutons/champs, 6px cartes, 8px fenêtres, 99px pastilles
+        lg: "8px",
+        md: "6px",
+        sm: "4px",
+        pill: "99px",
+      },
+      boxShadow: {
+        sh: "var(--sh)",
+        shm: "var(--shm)",
+        shl: "var(--shl)",
+        card: "var(--sh)",
+        "card-hover": "var(--shm)",
       },
       keyframes: {
         "accordion-down": {
@@ -92,23 +130,24 @@ export default {
           to: { height: "0" },
         },
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(10px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
         "slide-in": {
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        rise: {
+          from: { opacity: "0", transform: "translateY(14px)" },
+          to: { opacity: "1", transform: "none" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
-        "slide-in": "slide-in 0.3s ease-out",
-      },
-      boxShadow: {
-        'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        'card-hover': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+        "fade-in": "fade-in 0.28s ease-out",
+        "slide-in": "slide-in 0.3s cubic-bezier(.2,.8,.2,1)",
+        rise: "rise 0.45s cubic-bezier(.2,.8,.2,1) both",
       },
     },
   },

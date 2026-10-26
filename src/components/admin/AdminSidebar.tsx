@@ -1,202 +1,222 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  CalendarDays, 
-  PlusCircle, 
-  Ticket,  
-  LogOut,
-  Menu,
-  X,
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Calendar,
+  PlusCircle,
   Building2,
-  TrendingUp,
+  ChartLineUp,
   KeyRound,
   Bell,
-  Landmark
-} from 'lucide-react';
+  Landmark,
+  LogOut,
+  Sun,
+  Moon,
+  CircleHalf,
+  BadgeCheck,
+  SealWarning,
+  type LucideIcon,
+} from "@/components/icons";
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { deconnecter } from '@/lib/Transmission';
+import { THEMES, useTheme, type Theme } from '@/lib/theme';
+import { initiales, libelleRole, useSession, useStructure } from '@/hooks/use-structure';
+import { mockNotifications } from '@/data/mockNotifications';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Événements', href: '/admin/events', icon: CalendarDays },
+const navigation: { name: string; href: string; icon: LucideIcon }[] = [
+  { name: 'Tableau de bord', href: '/admin', icon: LayoutDashboard },
+  { name: 'Événements', href: '/admin/events', icon: Calendar },
   { name: 'Créer un événement', href: '/admin/events/create', icon: PlusCircle },
   { name: 'Ma structure', href: '/admin/organization', icon: Building2 },
-  { name: 'Statistiques & Performances', href: '/admin/statistics', icon: TrendingUp },
+  { name: 'Statistiques', href: '/admin/statistics', icon: ChartLineUp },
   { name: 'Accès & contrôle', href: '/admin/access-control', icon: KeyRound },
   { name: 'Notifications', href: '/admin/notifications', icon: Bell },
-  { name: 'Finances & paiements', href: '/admin/finances', icon: Landmark },
+  { name: 'Finances', href: '/admin/finances', icon: Landmark },
 ];
 
-interface UserData {
-  id?: number;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
+const THEME_ICONS: Record<Theme, LucideIcon> = { paper: Sun, ink: Moon, mono: CircleHalf };
+
+/** Nombre de notifications non lues (affiché en pastille magenta et dans l'en-tête). */
+export const nombreNonLues = () => mockNotifications.filter((n) => !n.read).length;
+
+interface AdminSidebarProps {
+  /** Sous 980px, la barre latérale devient un tiroir */
+  open: boolean;
+  onClose: () => void;
 }
 
-export function AdminSidebar() {
+export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    // Récupérer les données utilisateur depuis localStorage
-    const userDataStr = localStorage.getItem('user_data');
-    if (userDataStr) {
-      try {
-        const parsedUserData: UserData = JSON.parse(userDataStr);
-        setUserData(parsedUserData);
-      } catch (error) {
-        console.error('Erreur lors du parsing des données utilisateur:', error);
-      }
-    }
-  }, []);
+  const session = useSession();
+  const { data: structure } = useStructure();
+  const { theme, setTheme } = useTheme();
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const nonLues = nombreNonLues();
 
   const isActive = (path: string) => {
-    if (path === '/admin') {
-      return location.pathname === '/admin';
+    if (path === '/admin') return location.pathname === '/admin';
+    if (path === '/admin/events') {
+      return location.pathname.startsWith(path) && !location.pathname.startsWith('/admin/events/create');
     }
     return location.pathname.startsWith(path);
   };
 
-  const handleLogout = () => {
-    const confirmer = window.confirm('Voulez-vous vraiment vous déconnecter ?');
-    
-    if (confirmer) {
-      setIsMobileMenuOpen(false);
-      deconnecter();
-    }
-  };
-
-  // Fonction pour obtenir les initiales
-  const getInitials = (firstName?: string, lastName?: string): string => {
-    if (!firstName && !lastName) return 'U'; // U pour User par défaut
-    
-    const firstInitial = firstName?.charAt(0).toUpperCase() || '';
-    const lastInitial = lastName?.charAt(0).toUpperCase() || '';
-    
-    return `${firstInitial}${lastInitial}` || 'U';
-  };
-
-  // Fonction pour obtenir le nom complet
-  const getFullName = (firstName?: string, lastName?: string): string => {
-    if (!firstName && !lastName) return 'Utilisateur';
-    
-    return `${firstName || ''} ${lastName || ''}`.trim();
-  };
-
-  const SidebarContent = () => (
-    <>
-      {/* Logo */}
-      <div className="flex h-16 items-center gap-3 px-6 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
-          <Ticket className="h-5 w-5 text-accent-foreground" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-lg font-bold text-sidebar-accent-foreground">Ticket241</span>
-          <span className="text-xs text-sidebar-muted">Espace Organisateur</span>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {navigation.map((item) => {
-          const active = isActive(item.href);
-          return (
-            <Link
-              key={item.name}
-              to={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
-                active
-                  ? 'sidebar-item-active'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-              )}
-            >
-              <item.icon className={cn('h-5 w-5', active && 'text-sidebar-primary')} />
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User section */}
-      <div className="border-t border-sidebar-border p-4">
-        <div className="flex items-center gap-3 px-2 mb-3">
-          <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center">
-            <span className="text-sm font-medium text-sidebar-accent-foreground">
-              {getInitials(userData?.firstName, userData?.lastName)}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-accent-foreground truncate">
-              {getFullName(userData?.firstName, userData?.lastName)}
-            </p>
-            <p className="text-xs text-sidebar-muted truncate">
-              {userData?.email || 'email@example.com'}
-            </p>
-          </div>
-        </div>
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          onClick={handleLogout}
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Déconnexion
-        </Button>
-      </div>
-    </>
-  );
+  const fullName = `${session?.firstName ?? ''} ${session?.lastName ?? ''}`.trim() || 'Utilisateur';
+  const structureName = structure?.nom ?? 'Ma structure';
 
   return (
     <>
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-sidebar flex items-center px-4 border-b border-sidebar-border">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-sidebar-foreground hover:bg-sidebar-accent"
-        >
-          {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </Button>
-        <div className="flex items-center gap-2 ml-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-            <Ticket className="h-4 w-4 text-accent-foreground" />
-          </div>
-          <span className="text-lg font-bold text-sidebar-accent-foreground">Ticket241</span>
-        </div>
-      </div>
-
-      {/* Mobile sidebar overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 z-40 bg-black/50"
-          onClick={() => setIsMobileMenuOpen(false)}
+      {open && (
+        <div
+          className="fixed inset-0 z-[60] bg-[rgba(16,15,14,.44)] animate-fade-in nav:hidden"
+          onClick={onClose}
+          aria-hidden
         />
       )}
 
-      {/* Mobile sidebar */}
       <aside
         className={cn(
-          'lg:hidden fixed top-16 left-0 bottom-0 z-40 w-64 bg-sidebar transform transition-transform duration-300',
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          'z-[70] flex h-screen w-64 flex-none flex-col border-r border-line bg-side',
+          'fixed inset-y-0 left-0 nav:sticky nav:top-0 nav:flex',
+          open ? 'flex animate-slide-in' : 'hidden',
         )}
       >
-        <div className="flex flex-col h-full">
-          <SidebarContent />
+        {/* Logo */}
+        <div className="flex items-center gap-2.5 px-5 pb-4 pt-5">
+          <img src="/brand/logo.png" alt="Ticket241" className="t-logo h-7" />
+          <span className="t-label pt-1 !text-[10px]">Organisateur</span>
+        </div>
+
+        {/* Carte structure */}
+        <Link
+          to="/admin/organization"
+          onClick={onClose}
+          className="mx-3.5 flex items-center gap-2.5 rounded-md border border-line bg-card p-3 text-ink no-underline"
+        >
+          {structure?.logoUrl ? (
+            <img src={structure.logoUrl} alt="" className="t-img h-9 w-9 flex-none rounded-md object-cover" />
+          ) : (
+            <div className="flex h-9 w-9 flex-none items-center justify-center rounded-md bg-accs text-sm font-bold text-acc">
+              {initiales(structureName)}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold">{structureName}</div>
+            {structure?.isVerified ? (
+              <div className="flex items-center gap-1 text-[11.5px] text-acc">
+                <BadgeCheck className="h-[13px] w-[13px]" />
+                Vérifiée
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-[11.5px] text-acc2">
+                <SealWarning className="h-[13px] w-[13px]" />
+                Non vérifiée
+              </div>
+            )}
+          </div>
+        </Link>
+
+        {/* Navigation */}
+        <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 py-4">
+          {navigation.map((item) => {
+            const active = isActive(item.href);
+            const showBadge = item.href === '/admin/notifications' && nonLues > 0;
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={onClose}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'relative flex items-center gap-3 rounded-[5px] px-3 py-2.5 text-[14.5px] no-underline transition-colors duration-200 hover:bg-card',
+                  active ? 'bg-card font-semibold text-ink' : 'text-ink2',
+                )}
+              >
+                <span
+                  className={cn('absolute bottom-[9px] left-0 top-[9px] w-[3px] rounded-[3px]', active ? 'bg-acc' : 'bg-transparent')}
+                />
+                <item.icon className="h-[19px] w-[19px]" weight={active ? 'fill' : 'duotone'} />
+                <span className="flex-1">{item.name}</span>
+                {showBadge && (
+                  <span className="t-num h-5 min-w-5 rounded-pill bg-acc2 px-1.5 text-center text-[11px] font-semibold leading-5 text-white">
+                    {nonLues}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Thème + utilisateur */}
+        <div className="border-t border-line p-3.5">
+          <div className="mb-3 flex gap-[3px] rounded-pill bg-bg p-[3px]" role="radiogroup" aria-label="Thème">
+            {THEMES.map((t) => {
+              const Icon = THEME_ICONS[t.id];
+              const selected = theme === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  title={t.label}
+                  onClick={() => setTheme(t.id)}
+                  className={cn(
+                    'flex h-7 flex-1 items-center justify-center gap-1.5 rounded-pill text-[11.5px] transition-all',
+                    selected ? 'bg-card text-ink shadow-sh' : 'text-ink3 hover:text-ink2',
+                  )}
+                >
+                  <Icon className="h-[13px] w-[13px]" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full border border-line bg-card text-[12.5px] font-semibold text-ink2">
+              {initiales(fullName, 'U')}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[13.5px] font-semibold">{fullName}</div>
+              <div className="truncate text-[11.5px] text-ink3">{libelleRole(session?.roles)}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setConfirmLogout(true)}
+              title="Déconnexion"
+              aria-label="Déconnexion"
+              className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full border border-line text-ink2 transition-colors hover:bg-card hover:text-ink"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </aside>
 
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-sidebar">
-        <SidebarContent />
-      </aside>
+      <AlertDialog open={confirmLogout} onOpenChange={setConfirmLogout}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Se déconnecter ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Vous devrez saisir à nouveau votre numéro et votre mot de passe pour revenir dans l’espace organisateur.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deconnecter()}>Se déconnecter</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { MoreVertical, Phone, Clock, Pencil, Trash2, QrCode, CalendarDays } from 'lucide-react';
+import { MoreVertical, Phone, Clock, Pencil, Trash2, QrCode, CalendarDays } from "@/components/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +36,7 @@ export function ScanAgentCard({ agent, eventNames, onEdit, onDelete, onToggleAct
                 <Badge 
                   variant="outline" 
                   className={agent.isActive 
-                    ? 'bg-green-500/10 text-green-600 border-green-500/20' 
+                    ? 'bg-acc/10 text-acc border-acc/20' 
                     : 'bg-muted text-muted-foreground'
                   }
                 >

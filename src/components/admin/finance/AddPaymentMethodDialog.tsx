@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PaymentMethod } from '@/types/finance';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Building2, Smartphone } from 'lucide-react';
+import { Building2, Smartphone } from "@/components/icons";
 
 interface AddPaymentMethodDialogProps {
   open: boolean;

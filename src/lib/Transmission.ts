@@ -704,13 +704,13 @@ export const notifications = {
 
 export const afficherToast = {
   succes: (message: string, titre = "Succès") =>
-    toast({ title: titre, description: message, className: "bg-green-600 text-white" }),
+    toast({ title: titre, description: message, className: "bg-acc text-white" }),
   erreur: (message: string, titre = "Erreur") =>
     toast({ variant: "destructive", title: titre, description: message }),
   info: (message: string, titre = "Information") =>
     toast({ title: titre, description: message }),
   avertissement: (message: string, titre = "Attention") =>
-    toast({ title: titre, description: message, className: "bg-yellow-500 text-white" }),
+    toast({ title: titre, description: message, className: "bg-acc2 text-white" }),
 };
 
 // ============================================================
