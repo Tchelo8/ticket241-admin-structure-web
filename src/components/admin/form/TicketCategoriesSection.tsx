@@ -1,4 +1,5 @@
 import { TicketCategory } from '@/types/event';
+import { SectionTitle } from "./SectionTitle";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -71,12 +72,9 @@ export function TicketCategoriesSection({
     .reduce((acc, c) => acc + c.availableSeats, 0);
 
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+    <section className="t-card space-y-6 p-[22px]">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Ticket className="h-5 w-5" />
-          Catégories de billets *
-        </h3>
+        <SectionTitle n="04">Catégories de billets *</SectionTitle>
         {ticketCategories.length > 0 && (
           <span className="text-sm text-muted-foreground">
             {totalSeats} places au total
@@ -283,6 +281,6 @@ export function TicketCategoriesSection({
           </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

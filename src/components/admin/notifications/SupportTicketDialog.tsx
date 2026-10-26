@@ -53,7 +53,7 @@
            </div>
          </DialogHeader>
  
-         <div className="bg-muted/50 rounded-lg p-3 text-sm">
+         <div className="bg-surf rounded-lg p-3 text-sm">
            <p className="text-muted-foreground">{ticket.description}</p>
            <p className="text-xs text-muted-foreground mt-2">
              Créé le {format(new Date(ticket.createdAt), 'dd MMMM yyyy à HH:mm', { locale: fr })}
@@ -73,8 +73,8 @@
                  <Avatar className="h-8 w-8 shrink-0">
                    <AvatarFallback className={cn(
                      message.senderType === 'support' 
-                       ? 'bg-primary text-primary-foreground' 
-                       : 'bg-secondary'
+                       ? 'bg-accs text-acc' 
+                       : 'bg-surf text-ink2'
                    )}>
                      {message.senderType === 'support' ? (
                        <Headphones className="h-4 w-4" />
@@ -89,10 +89,10 @@
                    message.senderType === 'user' && 'text-right'
                  )}>
                    <div className={cn(
-                     'inline-block rounded-lg p-3 text-sm',
+                     'inline-block rounded-md px-3.5 py-2.5 text-[14.5px] leading-relaxed',
                      message.senderType === 'support' 
-                       ? 'bg-muted text-left' 
-                       : 'bg-primary text-primary-foreground text-left'
+                       ? 'bg-surf text-ink text-left' 
+                       : 'bg-acc text-on-acc text-left'
                    )}>
                      <p className="font-medium text-xs mb-1">{message.senderName}</p>
                      <p>{message.message}</p>

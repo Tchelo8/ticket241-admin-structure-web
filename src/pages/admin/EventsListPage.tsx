@@ -359,7 +359,7 @@ export default function EventsListPage() {
             type="button"
             onClick={() => setSelection(new Set())}
             disabled={isPublishing}
-            className="h-9 rounded-sm border border-white/30 px-3.5 text-[13.5px] text-inherit transition-colors hover:bg-white/10 disabled:opacity-50"
+            className="h-9 rounded-sm border border-bg/30 px-3.5 text-[13.5px] text-inherit transition-colors hover:bg-bg/10 disabled:opacity-50"
           >
             Désélectionner
           </button>

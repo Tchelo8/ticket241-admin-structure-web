@@ -1,4 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { SectionTitle } from "./SectionTitle";
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,8 +32,8 @@ export function GeneralInfoSection({
   categoriesChargement,
 }: GeneralInfoSectionProps) {
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-      <h3 className="text-lg font-semibold">Informations générales</h3>
+    <section className="t-card space-y-6 p-[22px]">
+      <SectionTitle n="01">Informations générales</SectionTitle>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* title → name */}
@@ -95,6 +96,6 @@ export function GeneralInfoSection({
           <p className="text-sm text-destructive">{errors.description.message}</p>
         )}
       </div>
-    </div>
+    </section>
   );
 }

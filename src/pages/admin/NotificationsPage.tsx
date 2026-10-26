@@ -66,7 +66,7 @@
        {/* Header */}
        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
          <div>
-           <h1 className="text-2xl md:text-3xl font-bold">Centre de notifications</h1>
+           <h1 className="t-page-title">Centre de notifications</h1>
            <p className="text-muted-foreground mt-1">
              Gérez vos notifications et demandes de support
            </p>
@@ -82,11 +82,11 @@
          <Card>
            <CardContent className="p-4">
              <div className="flex items-center gap-3">
-               <div className="p-2 rounded-lg bg-primary/10">
-                 <Bell className="h-5 w-5 text-primary" />
+               <div className="p-2 rounded-lg bg-accs">
+                 <Bell className="h-5 w-5 text-acc" />
                </div>
                <div>
-                 <p className="text-2xl font-bold">{unreadCount}</p>
+                 <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{unreadCount}</p>
                  <p className="text-xs text-muted-foreground">Non lues</p>
                </div>
              </div>
@@ -96,10 +96,10 @@
            <CardContent className="p-4">
              <div className="flex items-center gap-3">
                <div className="p-2 rounded-lg bg-secondary">
-                 <MessageSquare className="h-5 w-5 text-primary" />
+                 <MessageSquare className="h-5 w-5 text-acc" />
                </div>
                <div>
-                 <p className="text-2xl font-bold">{openTicketsCount}</p>
+                 <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{openTicketsCount}</p>
                  <p className="text-xs text-muted-foreground">Tickets ouverts</p>
                </div>
              </div>
@@ -112,7 +112,7 @@
                  <CheckCheck className="h-5 w-5 text-muted-foreground" />
                </div>
                <div>
-                 <p className="text-2xl font-bold">{notifications.length}</p>
+                 <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{notifications.length}</p>
                  <p className="text-xs text-muted-foreground">Total notifications</p>
                </div>
              </div>
@@ -125,7 +125,7 @@
                  <Filter className="h-5 w-5 text-accent-foreground" />
                </div>
                <div>
-                 <p className="text-2xl font-bold">{mockSupportTickets.length}</p>
+                 <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{mockSupportTickets.length}</p>
                  <p className="text-xs text-muted-foreground">Total tickets</p>
                </div>
              </div>
@@ -135,8 +135,8 @@
  
        {/* Tabs */}
        <Tabs defaultValue="notifications" className="space-y-4">
-         <TabsList className="w-full sm:w-auto">
-           <TabsTrigger value="notifications" className="flex-1 sm:flex-none">
+         <TabsList>
+           <TabsTrigger value="notifications">
              <Bell className="h-4 w-4 mr-2" />
              Notifications
              {unreadCount > 0 && (
@@ -145,7 +145,7 @@
                </Badge>
              )}
            </TabsTrigger>
-           <TabsTrigger value="support" className="flex-1 sm:flex-none">
+           <TabsTrigger value="support">
              <MessageSquare className="h-4 w-4 mr-2" />
              Support
              {openTicketsCount > 0 && (

@@ -1,4 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { SectionTitle } from "./SectionTitle";
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,11 +40,8 @@ export function ImageUploadSection({
   };
 
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-      <h3 className="text-lg font-semibold flex items-center gap-2">
-        <Image className="h-5 w-5" />
-        Image de l'événement
-      </h3>
+    <section className="t-card space-y-6 p-[22px]">
+      <SectionTitle n="03">Image de l'événement</SectionTitle>
 
       <div className="space-y-4">
         <div className="space-y-2">
@@ -101,6 +99,6 @@ export function ImageUploadSection({
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }

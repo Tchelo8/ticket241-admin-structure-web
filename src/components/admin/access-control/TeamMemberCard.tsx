@@ -31,7 +31,7 @@ const ROLE_CONFIG: Record<string, { label: string; description: string; color: s
   ROLE_STRUCTURE_ADMIN: {
     label: 'Accès administrateur global',
     description: 'Accès complet au tableau de bord',
-    color: 'bg-primary/10 text-primary border-primary/20',
+    color: 'bg-accs text-acc border-primary/20',
   },
   ROLE_ADMIN: {
     label: 'Administrateur',
@@ -76,8 +76,8 @@ export function TeamMemberCard({ member, onEdit, onDelete, onToggleActive }: Tea
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Avatar initiales */}
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <span className="text-sm font-medium text-primary">
+            <div className="h-10 w-10 rounded-full bg-accs flex items-center justify-center shrink-0">
+              <span className="text-sm font-medium text-acc">
                 {initiales(member)}
               </span>
             </div>

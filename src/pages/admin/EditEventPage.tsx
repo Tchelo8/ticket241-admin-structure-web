@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { EventForm } from '@/components/admin/EventForm';
 import { EventFormData } from '@/types/event';
 import { mockEvents } from '@/data/mockEvents';
@@ -17,7 +17,7 @@ export default function EditEventPage() {
 
   if (!event) {
     return (
-      <div className="p-6 lg:p-8 page-transition">
+      <div>
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-2">Événement non trouvé</h1>
           <p className="text-muted-foreground mb-6">
@@ -71,24 +71,15 @@ export default function EditEventPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 page-transition">
-      {/* Header */}
-      <div className="mb-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/admin/events')}
-          className="mb-4 -ml-2"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour aux événements
-        </Button>
-        <h1 className="text-2xl lg:text-3xl font-bold">Modifier l'événement</h1>
-        <p className="text-muted-foreground mt-1">
-          Mettez à jour les informations de "{event.title}"
-        </p>
-      </div>
+    <div>
+      <Link to="/admin/events" className="flex w-fit items-center gap-[7px] text-sm text-ink2 no-underline hover:text-ink">
+        <ArrowLeft className="h-4 w-4" />
+        Mes événements
+      </Link>
+      <h1 className="t-page-title mt-4">Modifier l’événement</h1>
+      <p className="mt-1.5 text-[15px] text-ink2">Mettez à jour les informations de « {event.title} ».</p>
 
-      {/* Form - Full Width */}
+      <div className="mt-6">
       <EventForm
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
@@ -96,6 +87,7 @@ export default function EditEventPage() {
         submitLabel="Enregistrer les modifications"
         organizationName="Ticket241 Events"
       />
+      </div>
     </div>
   );
 }

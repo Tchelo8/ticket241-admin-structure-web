@@ -157,7 +157,7 @@ export default function OrganizationPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Ma structure</h1>
+        <h1 className="t-page-title">Ma structure</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Gérez les informations de votre organisation
         </p>
@@ -174,13 +174,13 @@ export default function OrganizationPage() {
         <CardContent className="flex items-center gap-4 px-6 py-4">
           {structureData?.isVerified ? (
             <>
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-full bg-accs flex items-center justify-center shrink-0">
+                <CheckCircle2 className="h-5 w-5 text-acc" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-primary text-sm">Structure vérifiée</h3>
-                  <Badge variant="outline" className="border-primary text-primary text-xs">
+                  <h3 className="font-semibold text-acc text-sm">Structure vérifiée</h3>
+                  <Badge variant="outline" className="border-primary text-acc text-xs">
                     <BadgeCheck className="h-3 w-3 mr-1" />
                     Vérifié
                   </Badge>
@@ -190,7 +190,7 @@ export default function OrganizationPage() {
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-xl font-bold text-primary">{structureData?.validatedEventCount}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em] text-acc">{structureData?.validatedEventCount}</p>
                 <p className="text-xs text-muted-foreground">événements validés</p>
               </div>
             </>
@@ -242,7 +242,7 @@ export default function OrganizationPage() {
                   <img
                     src={logoPreview}
                     alt="Logo"
-                    className="h-28 w-28 rounded-xl object-cover border border-border"
+                    className="h-28 w-28 rounded-md object-cover border border-border"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
                         'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop';
@@ -259,7 +259,7 @@ export default function OrganizationPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="h-28 w-28 rounded-xl border-2 border-dashed border-border flex items-center justify-center bg-muted/40">
+                <div className="h-28 w-28 rounded-md border-2 border-dashed border-border flex items-center justify-center bg-muted/40">
                   <Building2 className="h-10 w-10 text-muted-foreground" />
                 </div>
               )}

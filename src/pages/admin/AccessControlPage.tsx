@@ -271,15 +271,15 @@ export default function AccessControlPage() {
 
   // ══════════════════════════════════════════════════════════
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="space-y-6">
 
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Shield className="h-5 w-5 text-primary" />
+        <div className="h-10 w-10 rounded-lg bg-accs flex items-center justify-center">
+          <Shield className="h-5 w-5 text-acc" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Accès & Contrôle</h1>
+          <h1 className="t-page-title">Accès & Contrôle</h1>
           <p className="text-muted-foreground text-sm md:text-base">
             Gérez votre équipe et contrôlez l'accès à vos événements
           </p>
@@ -292,14 +292,14 @@ export default function AccessControlPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Users className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-lg bg-accs flex items-center justify-center">
+                <Users className="h-5 w-5 text-acc" />
               </div>
               <div>
                 {chargementEquipe ? (
                   <Skeleton className="h-7 w-14 mb-1" />
                 ) : (
-                  <p className="text-2xl font-bold">
+                  <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">
                     {equipeActive}
                     <span className="text-base font-normal text-muted-foreground">/4</span>
                   </p>
@@ -317,7 +317,7 @@ export default function AccessControlPage() {
                 <QrCode className="h-5 w-5 text-accent-foreground" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">
                   {agentsActifs}
                   <span className="text-base font-normal text-muted-foreground">/{scanAgents.length}</span>
                 </p>
@@ -334,7 +334,7 @@ export default function AccessControlPage() {
                 <CheckCircle className="h-5 w-5 text-acc" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{totalScans}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{totalScans}</p>
                 <p className="text-xs text-muted-foreground">Scans réussis</p>
               </div>
             </div>
@@ -348,7 +348,7 @@ export default function AccessControlPage() {
                 <AlertTriangle className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{fraudAttempts}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{fraudAttempts}</p>
                 <p className="text-xs text-muted-foreground">Fraudes détectées</p>
               </div>
             </div>
@@ -358,8 +358,8 @@ export default function AccessControlPage() {
 
       {/* Tabs */}
       <Tabs defaultValue="team" className="space-y-4">
-        <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-muted p-1">
-          <TabsTrigger value="team" className="flex-1 min-w-[140px] gap-2 data-[state=active]:bg-background">
+        <TabsList>
+          <TabsTrigger value="team">
             <Users className="h-4 w-4" />
             Équipe
             {/* Badge count depuis l'API */}
@@ -369,17 +369,17 @@ export default function AccessControlPage() {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="agents" className="flex-1 min-w-[140px] gap-2 data-[state=active]:bg-background">
+          <TabsTrigger value="agents">
             <QrCode className="h-4 w-4" />
             <span className="hidden sm:inline">Agents Scan</span>
             <span className="sm:hidden">Agents</span>
           </TabsTrigger>
-          <TabsTrigger value="control" className="flex-1 min-w-[140px] gap-2 data-[state=active]:bg-background">
+          <TabsTrigger value="control">
             <Activity className="h-4 w-4" />
             <span className="hidden sm:inline">Contrôle Live</span>
             <span className="sm:hidden">Live</span>
           </TabsTrigger>
-          <TabsTrigger value="history" className="flex-1 min-w-[140px] gap-2 data-[state=active]:bg-background">
+          <TabsTrigger value="history">
             <History className="h-4 w-4" />
             <span className="hidden sm:inline">Historique</span>
             <span className="sm:hidden">Hist.</span>

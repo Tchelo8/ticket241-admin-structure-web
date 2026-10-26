@@ -1,4 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { SectionTitle } from "./SectionTitle";
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,6 +30,8 @@ interface DateLocationSectionProps {
   errors: FieldErrors<EventFormData>;
   city: string;
   onCityChange: (value: string) => void;
+  /** Liste des villes chargée (pour l'aperçu du formulaire) */
+  onCitiesLoaded?: (cities: { id: number; name: string }[]) => void;
 }
 
 export function DateLocationSection({
@@ -36,6 +39,7 @@ export function DateLocationSection({
   errors,
   city,
   onCityChange,
+  onCitiesLoaded,
 }: DateLocationSectionProps) {
   const [cities, setCities] = useState<City[]>([]);
   const [loadingCities, setLoadingCities] = useState(true);
@@ -45,6 +49,7 @@ export function DateLocationSection({
       const result = await recuperer<City[]>('/api/events/cities/get/all/active');
       if (result.succes && result.donnees) {
         setCities(result.donnees);
+        onCitiesLoaded?.(result.donnees);
       }
       setLoadingCities(false);
     };
@@ -52,8 +57,8 @@ export function DateLocationSection({
   }, []);
 
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-      <h3 className="text-lg font-semibold">Date et lieu</h3>
+    <section className="t-card space-y-6 p-[22px]">
+      <SectionTitle n="02">Date et lieu</SectionTitle>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="space-y-2">
@@ -150,6 +155,6 @@ export function DateLocationSection({
           {...register('locationDetails')}
         />
       </div>
-    </div>
+    </section>
   );
 }

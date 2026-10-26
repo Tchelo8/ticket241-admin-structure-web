@@ -192,10 +192,10 @@ export default function FinancesPage() {
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Finances & paiements</h1>
+        <h1 className="t-page-title">Finances & paiements</h1>
         <p className="text-muted-foreground">Suivez vos revenus, transactions et gérez vos moyens de paiement</p>
       </div>
 
@@ -206,10 +206,10 @@ export default function FinancesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Solde actuel</p>
-                <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.currentBalance)}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatCurrency(mockFinancialSummary.currentBalance)}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <Wallet className="h-6 w-6 text-primary" />
+                <Wallet className="h-6 w-6 text-acc" />
               </div>
             </div>
           </CardContent>
@@ -220,7 +220,7 @@ export default function FinancesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">En attente de versement</p>
-                <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.pendingPayouts)}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatCurrency(mockFinancialSummary.pendingPayouts)}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-acc2/10 flex items-center justify-center">
                 <Clock className="h-6 w-6 text-acc2" />
@@ -234,7 +234,7 @@ export default function FinancesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total des gains</p>
-                <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.totalEarnings)}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatCurrency(mockFinancialSummary.totalEarnings)}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-acc/10 flex items-center justify-center">
                 <TrendingUp className="h-6 w-6 text-acc" />
@@ -248,7 +248,7 @@ export default function FinancesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Commissions plateforme</p>
-                <p className="text-2xl font-bold text-foreground">{formatCurrency(mockFinancialSummary.totalCommissions)}</p>
+                <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatCurrency(mockFinancialSummary.totalCommissions)}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
                 <Receipt className="h-6 w-6 text-muted-foreground" />
@@ -260,11 +260,11 @@ export default function FinancesPage() {
 
       {/* Tabs */}
       <Tabs defaultValue="revenues" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-          <TabsTrigger value="revenues" className="text-xs sm:text-sm py-2">Revenus par événement</TabsTrigger>
-          <TabsTrigger value="transactions" className="text-xs sm:text-sm py-2">Transactions</TabsTrigger>
-          <TabsTrigger value="payment-methods" className="text-xs sm:text-sm py-2">Moyens de paiement</TabsTrigger>
-          <TabsTrigger value="invoices" className="text-xs sm:text-sm py-2">Factures & relevés</TabsTrigger>
+        <TabsList>
+          <TabsTrigger value="revenues">Revenus par événement</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="payment-methods">Moyens de paiement</TabsTrigger>
+          <TabsTrigger value="invoices">Factures & relevés</TabsTrigger>
         </TabsList>
 
         {/* Revenues by Event Tab */}
@@ -345,7 +345,7 @@ export default function FinancesPage() {
                         </div>
                         <div>
                           <p className="text-muted-foreground">Revenus nets</p>
-                          <p className="font-bold text-acc">{formatCurrency(revenue.netRevenue)}</p>
+                          <p className="font-semibold text-acc">{formatCurrency(revenue.netRevenue)}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -356,7 +356,7 @@ export default function FinancesPage() {
           </Card>
 
           {/* Commission Explanation */}
-          <Card className="bg-muted/50">
+          <Card className="bg-surf">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
@@ -502,7 +502,7 @@ export default function FinancesPage() {
                             </p>
                           </div>
                           <span className={cn(
-                            'font-bold flex items-center gap-1 shrink-0',
+                            'font-semibold flex items-center gap-1 shrink-0',
                             isPositive ? 'text-acc' : 'text-acc2'
                           )}>
                             {isPositive ? '+' : ''}{formatCurrency(transaction.amount)}
@@ -545,7 +545,7 @@ export default function FinancesPage() {
                           <div className="flex items-center gap-2">
                             <p className="font-medium">{paymentMethodConfig[payment.method].label}</p>
                             {payment.isPrimary && (
-                              <Badge className="bg-primary/10 text-primary border-0">
+                              <Badge className="bg-accs text-acc border-0">
                                 <Star className="h-3 w-3 mr-1" />
                                 Principal
                               </Badge>

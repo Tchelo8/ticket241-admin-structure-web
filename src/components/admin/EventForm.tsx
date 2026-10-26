@@ -3,7 +3,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { EventFormData, TicketCategory } from '@/types/event';
 import { Button } from '@/components/ui/button';
-import { Save, Send } from "@/components/icons";
+import { Save, Send, CheckCircle, Circle, Image as ImageIcon } from "@/components/icons";
+import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { dateCourte, fcfa } from '@/lib/format';
 import { useState, useEffect } from 'react';
 
 import { GeneralInfoSection } from './form/GeneralInfoSection';
@@ -88,6 +91,8 @@ export function EventForm({
     defaultValues?.ticketCategories || []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [villes, setVilles] = useState<{ id: number; name: string }[]>([]);
+  const navigate = useNavigate();
 
   // Charger les catégories depuis l'API au montage
   useEffect(() => {
@@ -300,93 +305,175 @@ export function EventForm({
 
   const submitting = externalIsSubmitting ?? isSubmitting;
 
+  // ── Aperçu en direct et vérifications avant publication ───────────────────
+
+  const title = watch('title');
+  const date = watch('date');
+  const time = watch('time');
+  const venueName = watch('venueName');
+  const organizerName = watch('organizerName');
+  const organizerPhone = watch('organizerPhone');
+  const categoriesActives = ticketCategories.filter((cat) => cat.isEnabled);
+  const nomCategorie = categoriesAPI.find((c) => String(c.id) === categoryStr)?.displayName;
+  const nomVille = villes.find((v) => String(v.id) === String(city))?.name;
+  const prixMin = categoriesActives.length ? Math.min(...categoriesActives.map((c) => Number(c.price) || 0)) : null;
+
+  const verifications = [
+    { label: 'Titre', ok: (title ?? '').trim().length >= 3 },
+    { label: 'Catégorie', ok: !!nomCategorie },
+    { label: 'Date et heure', ok: !!date && !!time },
+    { label: 'Lieu et ville', ok: !!venueName?.trim() && !!city },
+    { label: 'Image de couverture', ok: !!imageUrl },
+    { label: 'Billets', ok: categoriesActives.length > 0 },
+    { label: 'Contact organisateur', ok: (organizerName ?? '').trim().length >= 2 && (organizerPhone ?? '').trim().length >= 8 },
+  ];
+  const faites = verifications.filter((v) => v.ok).length;
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
-      <GeneralInfoSection
-        register={register}
-        errors={errors}
-        category={categoryStr}
-        onCategoryChange={(value) => setValue('category', Number(value))}
-        organizationName={organizationName}
-        categoriesAPI={categoriesAPI}
-        categoriesChargement={categoriesChargement}
-      />
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-wrap items-start gap-6">
+      <div className="flex min-w-0 flex-[3_1_560px] flex-col gap-[18px]">
+        <GeneralInfoSection
+          register={register}
+          errors={errors}
+          category={categoryStr}
+          onCategoryChange={(value) => setValue('category', Number(value))}
+          organizationName={organizationName}
+          categoriesAPI={categoriesAPI}
+          categoriesChargement={categoriesChargement}
+        />
 
-      <DateLocationSection
-        register={register}
-        errors={errors}
-        city={city}
-        onCityChange={(value) => setValue('city', value)}
-      />
+        <DateLocationSection
+          register={register}
+          errors={errors}
+          city={city}
+          onCityChange={(value) => setValue('city', value)}
+          onCitiesLoaded={setVilles}
+        />
 
-      <ImageUploadSection
-        register={register}
-        errors={errors}
-        imageUrl={imageUrl}
-        onImageChange={handleImageChange}
-      />
+        <ImageUploadSection
+          register={register}
+          errors={errors}
+          imageUrl={imageUrl}
+          onImageChange={handleImageChange}
+        />
 
-      <TicketCategoriesSection
-        ticketCategories={ticketCategories}
-        onCategoriesChange={setTicketCategories}
-      />
+        <TicketCategoriesSection
+          ticketCategories={ticketCategories}
+          onCategoriesChange={setTicketCategories}
+        />
 
-      <OrganizerSection register={register} errors={errors} totalSeats={capaciteTotale} />
+        <OrganizerSection register={register} errors={errors} totalSeats={capaciteTotale} />
 
-      <SettingsSection
-        register={register}
-        errors={errors}
-        isPublished={isPublished}
-        isFeatured={isFeatured}
-        isPromoted={isPromoted}
-        isPublic={isPublic}
-        isOnline={isOnline}
-        onToggleChange={handleToggleChange}
-      />
+        <SettingsSection
+          register={register}
+          errors={errors}
+          isPublished={isPublished}
+          isFeatured={isFeatured}
+          isPromoted={isPromoted}
+          isPublic={isPublic}
+          isOnline={isOnline}
+          onToggleChange={handleToggleChange}
+        />
+      </div>
 
-      <div className="bg-card rounded-xl border border-border p-6">
-        {ticketCategories.length === 0 && (
-          <p className="text-sm text-destructive mb-4">
-            Vous devez ajouter au moins une catégorie de ticket.
-          </p>
-        )}
-
-        {/* Barre de progression upload image */}
-        {uploadProgression !== null && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="text-muted-foreground">Upload de l'image en cours...</span>
-              <span className="font-medium">{uploadProgression}%</span>
+      <aside className="flex min-w-0 flex-[1_1_300px] flex-col gap-3.5 lg:sticky lg:top-[90px]">
+        {/* Aperçu de la carte publique */}
+        <div className="overflow-hidden rounded-md border border-line bg-card shadow-shm">
+          <div className="border-b border-line px-4 py-3 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink3">
+            Aperçu sur Ticket241
+          </div>
+          <div className="p-4">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[5px] bg-surf">
+              {imageUrl ? (
+                <img src={imageUrl} alt="" className="t-img h-full w-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-ink3">
+                  <ImageIcon className="h-9 w-9" />
+                </div>
+              )}
+              <span className="absolute left-2.5 top-2.5 rounded-pill bg-[rgba(253,253,252,.94)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#201e1d]">
+                {nomCategorie ?? 'Catégorie'}
+              </span>
             </div>
-            <div className="w-full bg-muted rounded-full h-2">
-              <div
-                className="bg-accent h-2 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgression}%` }}
-              />
+            <div className="mt-3 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-acc">
+              {date ? dateCourte(`${date}T${time || '00:00'}`) : 'Date à définir'}
+            </div>
+            <div className="mt-1.5 text-[19px] font-semibold leading-tight tracking-[-0.018em]">
+              {title?.trim() || 'Titre de l’événement'}
+            </div>
+            <div className="mt-1.5 text-[13px] text-ink3">
+              {[venueName?.trim(), nomVille].filter(Boolean).join(', ') || 'Lieu à définir'}
+            </div>
+            <div className="my-3 h-px bg-line" />
+            <div className="t-num text-[15px] font-semibold">
+              {prixMin === null ? 'Aucun billet' : prixMin === 0 ? 'Gratuit' : `À partir de ${fcfa(prixMin)}`}
             </div>
           </div>
-        )}
+        </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* Vérifications et envoi */}
+        <div className="t-card p-4">
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink3">Avant publication</span>
+            <span className="t-num text-[12.5px] text-ink3">
+              {faites}/{verifications.length}
+            </span>
+          </div>
+          <ul className="mt-2.5 flex flex-col gap-2">
+            {verifications.map((v) => (
+              <li key={v.label} className={cn('flex items-center gap-[9px] text-sm', v.ok ? 'text-ink' : 'text-ink3')}>
+                {v.ok ? (
+                  <CheckCircle className="h-[17px] w-[17px] text-acc" weight="fill" />
+                ) : (
+                  <Circle className="h-[17px] w-[17px] text-ink3" />
+                )}
+                {v.label}
+              </li>
+            ))}
+          </ul>
+
+          {/* Barre de progression upload image */}
+          {uploadProgression !== null && (
+            <div className="mt-4">
+              <div className="mb-1 flex items-center justify-between text-[13px]">
+                <span className="text-ink2">Envoi de l’image…</span>
+                <span className="t-num font-semibold">{uploadProgression}%</span>
+              </div>
+              <div className="t-meter">
+                <span style={{ width: `${uploadProgression}%` }} />
+              </div>
+            </div>
+          )}
+
           <Button
             type="submit"
             disabled={submitting || ticketCategories.length === 0}
-            size="lg"
-            className="bg-accent text-accent-foreground hover:bg-accent/90"
+            className="mt-4 h-[50px] w-full text-[15.5px]"
           >
-            {isPublished ? (
-              <Send className="h-4 w-4 mr-2" />
+            {submitting ? (
+              <>
+                <span className="h-[17px] w-[17px] animate-spin rounded-full border-[2.5px] border-white/35 border-t-white" />
+                {uploadProgression !== null ? `Envoi de l’image… ${uploadProgression}%` : 'Enregistrement…'}
+              </>
             ) : (
-              <Save className="h-4 w-4 mr-2" />
+              <>
+                {isPublished ? <Send className="h-[17px] w-[17px]" /> : <Save className="h-[17px] w-[17px]" />}
+                {submitLabel}
+              </>
             )}
-            {submitting
-              ? uploadProgression !== null
-                ? `Upload image... ${uploadProgression}%`
-                : 'Enregistrement...'
-              : submitLabel}
+          </Button>
+          <p className="mt-2.5 text-[12.5px] leading-[1.45] text-ink3">
+            {ticketCategories.length === 0
+              ? 'Ajoutez au moins une catégorie de billets pour enregistrer.'
+              : faites < verifications.length
+              ? 'Les champs obligatoires sont vérifiés à l’enregistrement.'
+              : 'Tout est prêt.'}
+          </p>
+          <Button type="button" variant="outline" onClick={() => navigate('/admin/events')} className="mt-2.5 h-[42px] w-full font-normal">
+            Annuler
           </Button>
         </div>
-      </div>
+      </aside>
     </form>
   );
 }

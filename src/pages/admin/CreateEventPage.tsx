@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { EventForm } from '@/components/admin/EventForm';
 import { EventFormData } from '@/types/event';
 import { ArrowLeft } from "@/components/icons";
@@ -22,30 +22,22 @@ export default function CreateEventPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 page-transition">
-      {/* Header */}
-      <div className="mb-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/admin/events')}
-          className="mb-4 -ml-2"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour aux événements
-        </Button>
-        <h1 className="text-2xl lg:text-3xl font-bold">Créer un événement</h1>
-        <p className="text-muted-foreground mt-1">
-          Remplissez les informations pour créer un nouvel événement
-        </p>
-      </div>
+    <div>
+      <Link to="/admin/events" className="flex w-fit items-center gap-[7px] text-sm text-ink2 no-underline hover:text-ink">
+        <ArrowLeft className="h-4 w-4" />
+        Mes événements
+      </Link>
+      <h1 className="t-page-title mt-4">Créer un événement</h1>
+      <p className="mt-1.5 text-[15px] text-ink2">Six étapes, un aperçu en direct : votre événement prend forme à droite.</p>
 
-      {/* Form - Full Width */}
+      <div className="mt-6">
       <EventForm
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
         submitLabel="Créer l'événement"
         organizationName="Ticket241 Events"
       />
+      </div>
     </div>
   );
 }

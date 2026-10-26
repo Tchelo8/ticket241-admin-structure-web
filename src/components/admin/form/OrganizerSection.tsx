@@ -1,4 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { SectionTitle } from "./SectionTitle";
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,11 +13,8 @@ interface OrganizerSectionProps {
 
 export function OrganizerSection({ register, errors, totalSeats }: OrganizerSectionProps) {
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-      <h3 className="text-lg font-semibold flex items-center gap-2">
-        <User className="h-5 w-5" />
-        Informations de l'organisateur & capacité
-      </h3>
+    <section className="t-card space-y-6 p-[22px]">
+      <SectionTitle n="05">Informations de l'organisateur & capacité</SectionTitle>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -127,6 +125,6 @@ export function OrganizerSection({ register, errors, totalSeats }: OrganizerSect
         </div>
 
       </div>
-    </div>
+    </section>
   );
 }

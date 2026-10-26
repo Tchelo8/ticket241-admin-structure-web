@@ -1,4 +1,5 @@
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { SectionTitle } from "./SectionTitle";
 import { EventFormData } from '@/types/event';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,11 +29,8 @@ export function SettingsSection({
   onToggleChange,
 }: SettingsSectionProps) {
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-      <h3 className="text-lg font-semibold flex items-center gap-2">
-        <Settings className="h-5 w-5" />
-        Paramètres de publication
-      </h3>
+    <section className="t-card space-y-6 p-[22px]">
+      <SectionTitle n="06">Paramètres de publication</SectionTitle>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Status toggle */}
@@ -170,6 +168,6 @@ export function SettingsSection({
           Ces conditions seront affichées lors de l'achat de billets
         </p>
       </div>
-    </div>
+    </section>
   );
 }

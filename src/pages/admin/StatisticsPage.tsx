@@ -281,11 +281,11 @@ export default function StatisticsPage() {
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 page-transition">
+    <div className="space-y-6">
 
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Statistiques & Performances</h1>
+        <h1 className="t-page-title">Statistiques & Performances</h1>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">
           Analysez vos événements pour optimiser vos futures décisions
         </p>
@@ -341,11 +341,11 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <Ticket className="h-5 w-5 text-primary" />
+                  <Ticket className="h-5 w-5 text-acc" />
                   <Badge variant="secondary" className="text-xs">vendus</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Billets vendus</p>
-                <p className="text-lg sm:text-2xl font-bold">{kpis.totalBillets.toLocaleString('fr-FR')}</p>
+                <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em]">{kpis.totalBillets.toLocaleString('fr-FR')}</p>
               </div>
             </CardContent>
           </Card>
@@ -355,11 +355,11 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <Users className="h-5 w-5 text-primary" />
+                  <Users className="h-5 w-5 text-acc" />
                   <Badge variant="secondary" className="text-xs">{kpis.tauxRemplissage}%</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Places disponibles</p>
-                <p className="text-lg sm:text-2xl font-bold">{kpis.totalDisponibles.toLocaleString('fr-FR')}</p>
+                <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em]">{kpis.totalDisponibles.toLocaleString('fr-FR')}</p>
               </div>
             </CardContent>
           </Card>
@@ -369,11 +369,11 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <DollarSign className="h-5 w-5 text-primary" />
+                  <DollarSign className="h-5 w-5 text-acc" />
                   <TrendingUp className="h-4 w-4 text-acc" />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">CA Brut</p>
-                <p className="text-lg sm:text-2xl font-bold">{formatMonnaie(kpis.caBrut)}</p>
+                <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em]">{formatMonnaie(kpis.caBrut)}</p>
               </div>
             </CardContent>
           </Card>
@@ -386,7 +386,7 @@ export default function StatisticsPage() {
                   <DollarSign className="h-5 w-5 text-acc" />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">CA Net</p>
-                <p className="text-lg sm:text-2xl font-bold text-acc">{formatMonnaie(kpis.caNet)}</p>
+                <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em] text-acc">{formatMonnaie(kpis.caNet)}</p>
               </div>
             </CardContent>
           </Card>
@@ -400,7 +400,7 @@ export default function StatisticsPage() {
                   <Badge variant="outline" className="text-xs">5%</Badge>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Commission</p>
-                <p className="text-lg sm:text-2xl font-bold text-acc2">{formatMonnaie(kpis.commission)}</p>
+                <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em] text-acc2">{formatMonnaie(kpis.commission)}</p>
               </div>
             </CardContent>
           </Card>
@@ -410,11 +410,11 @@ export default function StatisticsPage() {
             <CardContent className="p-4 sm:pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <BarChart3 className="h-5 w-5 text-primary" />
+                  <BarChart3 className="h-5 w-5 text-acc" />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground">Remplissage</p>
                 <div className="space-y-1">
-                  <p className="text-lg sm:text-2xl font-bold">{kpis.tauxRemplissage}%</p>
+                  <p className="text-lg sm:t-num text-[26px] font-semibold tracking-[-0.024em]">{kpis.tauxRemplissage}%</p>
                   <Progress value={kpis.tauxRemplissage} className="h-1.5" />
                 </div>
               </div>
@@ -439,15 +439,15 @@ export default function StatisticsPage() {
                 <h4 className="font-semibold text-sm sm:text-base truncate">{donneesComparaison.courant.name}</h4>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{donneesComparaison.kpiCourant.totalBillets}</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{donneesComparaison.kpiCourant.totalBillets}</p>
                     <p className="text-xs text-muted-foreground">Billets</p>
                   </div>
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{formatMonnaie(donneesComparaison.kpiCourant.caBrut)}</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatMonnaie(donneesComparaison.kpiCourant.caBrut)}</p>
                     <p className="text-xs text-muted-foreground">CA Brut</p>
                   </div>
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{donneesComparaison.kpiCourant.tauxRemplissage}%</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{donneesComparaison.kpiCourant.tauxRemplissage}%</p>
                     <p className="text-xs text-muted-foreground">Remplissage</p>
                   </div>
                 </div>
@@ -459,7 +459,7 @@ export default function StatisticsPage() {
                 <div className="grid grid-cols-3 gap-4 text-center">
                   {/* Billets */}
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{donneesComparaison.kpiCompare.totalBillets}</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{donneesComparaison.kpiCompare.totalBillets}</p>
                     <p className="text-xs text-muted-foreground">Billets</p>
                     {(() => {
                       const diff = donneesComparaison.kpiCourant.totalBillets;
@@ -472,7 +472,7 @@ export default function StatisticsPage() {
                   </div>
                   {/* CA */}
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{formatMonnaie(donneesComparaison.kpiCompare.caBrut)}</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{formatMonnaie(donneesComparaison.kpiCompare.caBrut)}</p>
                     <p className="text-xs text-muted-foreground">CA Brut</p>
                     {(() => {
                       const ref = donneesComparaison.kpiCourant.caBrut;
@@ -485,7 +485,7 @@ export default function StatisticsPage() {
                   </div>
                   {/* Remplissage */}
                   <div>
-                    <p className="text-xl sm:text-2xl font-bold">{donneesComparaison.kpiCompare.tauxRemplissage}%</p>
+                    <p className="t-num text-[26px] font-semibold tracking-[-0.024em]">{donneesComparaison.kpiCompare.tauxRemplissage}%</p>
                     <p className="text-xs text-muted-foreground">Remplissage</p>
                   </div>
                 </div>
@@ -498,12 +498,12 @@ export default function StatisticsPage() {
       {/* Charts */}
       {!chargement && evenements.length > 0 && (
         <Tabs defaultValue="categories" className="space-y-6">
-          <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:inline-flex">
-            <TabsTrigger value="categories" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+          <TabsList>
+            <TabsTrigger value="categories">
               <PieChartIcon className="h-4 w-4 hidden sm:block" />
               Catégories
             </TabsTrigger>
-            <TabsTrigger value="comparison" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+            <TabsTrigger value="comparison">
               <BarChart3 className="h-4 w-4 hidden sm:block" />
               Par événement
             </TabsTrigger>
